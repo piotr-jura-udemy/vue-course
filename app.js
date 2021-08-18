@@ -1,8 +1,21 @@
+let nextTaskId = 100;
+
 const app = Vue.createApp({
   data() {
-    return {}
+    return {
+      tasks: []
+    }
   },
-  methods: {},
+  methods: {
+    taskAdded(task) {
+      this.tasks.push({
+        id: nextTaskId++,
+        description: task,
+        done: false,
+        priority: false
+      });
+    }
+  },
   computed: {}
 });
 
