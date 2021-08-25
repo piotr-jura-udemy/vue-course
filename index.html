@@ -19,10 +19,8 @@
       <add-task-input @added="taskAdded"></add-task-input>
     </div>
     <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-      <todo-list-item task="Okay"></todo-list-item>
-      <todo-list-item task="Buy clothes">
-      </todo-list-item>
-      <todo-list-item task="Buy some courses">
+      <todo-list-item v-for="task in tasks" :task="task"
+        :key="task.id">
       </todo-list-item>
     </div>
   </div>

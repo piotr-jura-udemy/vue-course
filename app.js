@@ -3,7 +3,30 @@ let nextTaskId = 100;
 const app = Vue.createApp({
   data() {
     return {
-      tasks: []
+      tasks: [{
+        id: 1,
+        description: 'Buy food for the dog',
+        priority: false,
+        done: false
+      },
+      {
+        id: 2,
+        description: 'Pay the bills',
+        priority: true,
+        done: false
+      },
+      {
+        id: 3,
+        description: 'Buy some computer games',
+        priority: false,
+        done: false
+      },
+      {
+        id: 4,
+        description: 'Go to the gym',
+        priority: false,
+        done: false
+      }]
     }
   },
   methods: {
@@ -22,7 +45,7 @@ const app = Vue.createApp({
 app.component('todo-list-item', {
   props: {
     task: {
-      type: String,
+      type: Object,
       required: true,
       // validator(value) {
       //   return "Okay" === value;
@@ -41,7 +64,7 @@ app.component('todo-list-item', {
   },
   template: `<div 
     class="bg-white shadow-sm rounded-md text-gray-700 text-xs md:text-sm p-4">
-      {{task}}
+      {{task.description}}
     </div>`
 });
 
