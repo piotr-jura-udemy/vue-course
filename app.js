@@ -3,6 +3,7 @@ let nextTaskId = 100;
 const app = Vue.createApp({
   data() {
     return {
+      onlyPending: false,
       tasks: [{
         id: 1,
         description: 'Buy food for the dog',
@@ -29,6 +30,13 @@ const app = Vue.createApp({
       }]
     }
   },
+  computed: {
+    displayedTasks() {
+      return this.tasks.filter(
+        task => !this.onlyPending || !task.done
+      );
+    }
+  },
   methods: {
     taskAdded(task) {
       this.tasks.push({
@@ -38,8 +46,7 @@ const app = Vue.createApp({
         priority: false
       });
     }
-  },
-  computed: {}
+  }
 });
 
 app.component('todo-list-item', {
@@ -86,6 +93,33 @@ app.component('add-task-input', {
     @keyup.enter="add"
     v-model="task"
     class="block w-full rounded-md shadow-sm text-lg p-4" />`
+});
+
+app.component('base-checkbox', {
+  props: {
+    modelValue: {
+      type: Boolean,
+      default: false
+    },
+    label: {
+      type: String
+    }
+  },
+  emits: ['update:modelValue'],
+  methods: {
+    onChange() {
+      this.$emit(
+        'update:modelValue', !this.modelValue
+      );
+    }
+  },
+  template: `<div class="flex items-center">
+    <input type="checkbox" 
+      class="h-4 w-4 text-indigo-600 border-gray-300 rounded mr-2"
+      :checked="modelValue"
+      @change="onChange"/>
+    <label>{{label}}</label>
+  </div>`
 });
 
 app.mount('#app');
