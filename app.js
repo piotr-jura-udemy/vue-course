@@ -32,9 +32,12 @@ const app = Vue.createApp({
   },
   computed: {
     displayedTasks() {
-      return this.tasks.filter(
-        task => !this.onlyPending || !task.done
-      );
+      return [...this.tasks].sort(
+        (a, b) => Number(b.priority) - Number(a.priority)
+      )
+        .filter(
+          task => !this.onlyPending || !task.done
+        );
     }
   },
   methods: {
@@ -58,6 +61,8 @@ app.component('todo-list-item', {
       //   return "Okay" === value;
       // }
     },
+    done: Boolean,
+    priority: Boolean
     // id: {
     //   required: false,
     //   type: Number,
@@ -69,10 +74,24 @@ app.component('todo-list-item', {
     //   // }
     // }
   },
+  emits: ['update:done', 'update:priority'],
   template: `<div 
-    class="bg-white shadow-sm rounded-md text-gray-700 text-xs md:text-sm p-4">
-      {{task.description}}
-    </div>`
+    class="bg-white shadow-sm rounded-md text-gray-700 text-xs md:text-sm p-4"
+    :class="{'opacity-25 line-through': task.done}">
+        <div>{{task.description}}</div>
+        <div class="py-4 bg-white">
+        <base-checkbox class="mb-2"
+          label="Done"
+          @update:model-value="$emit('update:done', $event)"
+          :model-value="done"></base-checkbox>
+        <base-checkbox
+          label="Prioritized"
+          @update:model-value="$emit('update:priority', $event)"
+          :model-value="priority"></base-checkbox>
+      </div>
+    </div>
+    
+    `
 });
 
 app.component('add-task-input', {

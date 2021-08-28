@@ -24,7 +24,8 @@
     </div>
     <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
       <todo-list-item v-for="task in displayedTasks"
-        :task="task" :key="task.id">
+        :task="task" :key="task.id" v-model:done="task.done"
+        v-model:priority="task.priority">
       </todo-list-item>
     </div>
   </div>
