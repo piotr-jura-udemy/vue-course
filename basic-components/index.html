@@ -16,17 +16,17 @@
 <body class="bg-gray-50 text-gray-800">
   <div id="app" class="p-8 w-3/4 mx-auto">
     <div class="mb-4">
-      <add-task @added="taskAdded"></add-task>
+      <add-task-input @added="taskAdded"></add-task-input>
+      <base-checkbox
+        class="my-4 p-4 text-gray-600 text-sm font-weight-100"
+        v-model="onlyPending"><b>Only pending tasks</b>
+      </base-checkbox>
     </div>
-    <base-checkbox label="Only pending tasks"
-      class="mb-4 p-4 text-gray-600 text-sm font-weight-100"
-      v-model="onlyPending">
-    </base-checkbox>
     <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-      <todo-item v-for="task in sortedTasks" :task="task"
-        v-model:done="task.done"
-        v-model:priority="task.priority" :key="task.id">
-      </todo-item>
+      <todo-list-item v-for="task in displayedTasks"
+        :task="task" :key="task.id" v-model:done="task.done"
+        v-model:priority="task.priority">
+      </todo-list-item>
     </div>
   </div>
 </body>
