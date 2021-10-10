@@ -1,5 +1,8 @@
 <template>
-  <div>Hello!</div>
+  <div>
+    <div><RouterLink to="/">Home page</RouterLink></div>
+    <div><RouterLink to="/about">About page</RouterLink></div>
+  </div>
   <RouterView />
 </template>
 
