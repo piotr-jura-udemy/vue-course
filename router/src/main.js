@@ -7,12 +7,12 @@ import ArticlePage from './pages/ArticlePage.vue'
 
 const routes = [
   {
-    path: "/",
+    path: '/',
     component: HomePage,
     name: 'home'
   },
   {
-    path: "/about",
+    path: '/about',
     component: AboutPage,
     name: 'about'
   },
