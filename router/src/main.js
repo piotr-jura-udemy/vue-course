@@ -4,6 +4,7 @@ import App from './App.vue'
 import HomePage from './pages/HomePage.vue'
 import AboutPage from './pages/AboutPage.vue'
 import ArticlePage from './pages/ArticlePage.vue'
+import NotFoundPage from './pages/NotFoundPage.vue'
 
 const routes = [
   {
@@ -20,6 +21,11 @@ const routes = [
     path: '/articles/:id',
     name: 'articles',
     component: ArticlePage
+  },
+  {
+    path: '/:url(.*)',
+    name: 'not-found',
+    component: NotFoundPage
   }
 ];
 
