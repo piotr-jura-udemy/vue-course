@@ -4,11 +4,8 @@
 </template>
 
 <script>
-const articles = {
-  1: { title: "Title for article 1" },
-  2: { title: "Title for article 2" },
-  3: { title: "Title for article 3" },
-};
+import { articles } from "./../data";
+
 export default {
   data() {
     return {
@@ -18,7 +15,7 @@ export default {
   watch: {
     "$route.params": {
       handler: function (newVal) {
-        if (undefined === articles[newVal.id]) {
+        if (undefined !== newVal.id && undefined === articles[newVal.id]) {
           return this.$router.push({
             name: "not-found",
             params: {
