@@ -20,7 +20,8 @@ const routes = [
   {
     path: '/articles/:id(\\d+)',
     name: 'articles',
-    component: ArticlePage
+    component: ArticlePage,
+    props: true
   },
   {
     path: '/:url(.+)?',

@@ -7,26 +7,22 @@
 import { articles } from "./../data";
 
 export default {
+  props: ["id"],
   data() {
     return {
       article: null,
     };
   },
-  watch: {
-    "$route.params": {
-      handler: function (newVal) {
-        if (undefined !== newVal.id && undefined === articles[newVal.id]) {
-          return this.$router.push({
-            name: "not-found",
-            params: {
-              url: "wrong",
-            },
-          });
-        }
-        this.article = articles[newVal.id];
-      },
-      immediate: true,
-    },
+  created() {
+    if (undefined === articles[this.id]) {
+      return this.$router.push({
+        name: "not-found",
+        params: {
+          url: "wrong",
+        },
+      });
+    }
+    this.article = articles[this.id];
   },
 };
 </script>
