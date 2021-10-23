@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage.vue'
 import AboutPage from './pages/AboutPage.vue'
 import ArticlePage from './pages/ArticlePage.vue'
 import NotFoundPage from './pages/NotFoundPage.vue'
+import ArticlesByTagPage from "./pages/ArticlesByTagPage.vue"
 
 const routes = [
   {
@@ -21,6 +22,12 @@ const routes = [
     path: '/articles/:id(\\d+)',
     name: 'articles',
     component: ArticlePage,
+    props: true
+  },
+  {
+    path: '/tags/:tags+',
+    name: 'tags',
+    component: ArticlesByTagPage,
     props: true
   },
   {
