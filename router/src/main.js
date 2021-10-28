@@ -5,14 +5,21 @@ import HomePage from './pages/HomePage.vue'
 import AboutPage from './pages/AboutPage.vue'
 import ArticlePage from './pages/ArticlePage.vue'
 import NotFoundPage from './pages/NotFoundPage.vue'
-import ArticlesByTagPage from "./pages/ArticlesByTagPage.vue"
+import ArticlesByTagPage from './pages/ArticlesByTagPage.vue'
 
 const routes = [
   {
     path: '/',
     component: HomePage,
-    name: 'home'
+    name: 'home',
+    alias: ['/home', '/homepage']
   },
+  // {
+  //   path: '/home',
+  //   redirect: {
+  //     name: 'home'
+  //   }
+  // },
   {
     path: '/about',
     component: AboutPage,
@@ -22,7 +29,7 @@ const routes = [
     path: '/articles/:id(\\d+)',
     name: 'articles',
     component: ArticlePage,
-    props: true
+    props: true,
   },
   {
     path: '/tags/:tags+',

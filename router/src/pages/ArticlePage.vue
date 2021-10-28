@@ -13,16 +13,26 @@ export default {
       article: null,
     };
   },
+  watch: {
+    id() {
+      this.loadArticle();
+    },
+  },
   created() {
-    if (undefined === articles[this.id]) {
-      return this.$router.push({
-        name: "not-found",
-        params: {
-          url: "wrong",
-        },
-      });
-    }
-    this.article = articles[this.id];
+    this.loadArticle();
+  },
+  methods: {
+    loadArticle() {
+      if (undefined === articles[this.id]) {
+        return this.$router.push({
+          name: "not-found",
+          params: {
+            url: "wrong",
+          },
+        });
+      }
+      this.article = articles[this.id];
+    },
   },
 };
 </script>
