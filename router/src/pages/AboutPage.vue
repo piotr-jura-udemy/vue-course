@@ -1,1 +1,3 @@
-<template>About</template>
+<template>
+  <h3>About</h3>
+</template>
