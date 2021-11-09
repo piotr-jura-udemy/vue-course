@@ -4,7 +4,8 @@
     <BaseCheckbox
       class="my-4 p-4 text-gray-600 text-sm font-weight-100"
       v-model="onlyPending"
-      ><b>Only pending tasks</b>
+    >
+      <b>Only pending tasks</b>
     </BaseCheckbox>
   </div>
   <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -52,7 +53,7 @@ export default {
   },
   methods: {
     taskAdded(task) {
-      this.tasks.push({
+      this.$store.commit("addTask", {
         id: nextTaskId++,
         description: task,
         done: false,
