@@ -36,6 +36,15 @@ const store = createStore({
     addTask(state, payload) {
       state.tasks.push(payload);
     },
+    updateTask(state, payload) {
+      const taskIndex = state.tasks?.findIndex(
+        (task) => task.id === payload.id
+      );
+
+      if (taskIndex !== undefined && taskIndex !== -1) {
+        state.tasks[taskIndex] = payload;
+      }
+    }
   },
 });
 
