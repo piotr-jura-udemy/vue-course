@@ -1,25 +1,45 @@
 <template>
-  <div class="mb-4">
-    <AddTaskInput @added="taskAdded" />
-    <BaseCheckbox
-      class="my-4 p-4 text-gray-600 text-sm font-weight-100"
-      v-model="onlyPending"
+  <div class="flex flex-col md:flex-row">
+    <div
+      class="
+        w-full
+        md:w-1/3
+        xl:w-1/5
+        mr-4
+        px-0
+        md:px-4
+        mb-4
+        h-full
+        text-lg
+        md:text-sm
+      "
     >
-      <b>Only pending tasks</b>
-    </BaseCheckbox>
+      <ProjectList :projects="[{}, {}]" />
+    </div>
+    <div class="w-full md:w-2/3 xl:w-4/5">
+      <div class="mb-4">
+        <AddTaskInput @added="taskAdded" />
+        <BaseCheckbox
+          class="my-4 p-4 text-gray-600 text-sm font-weight-100"
+          v-model="onlyPending"
+        >
+          <b>Only pending tasks</b>
+        </BaseCheckbox>
+      </div>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <TodoListItem
+          v-for="task in displayedTasks"
+          :task="task"
+          :key="task.id"
+          :done="task.done"
+          :priority="task.priority"
+          @update:done="taskUpdated(task, { done: $event })"
+          @update:priority="taskUpdated(task, { priority: $event })"
+        />
+      </div>
+      <SummaryLine class="mt-8" />
+    </div>
   </div>
-  <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-    <TodoListItem
-      v-for="task in displayedTasks"
-      :task="task"
-      :key="task.id"
-      :done="task.done"
-      :priority="task.priority"
-      @update:done="taskUpdated(task, { done: $event })"
-      @update:priority="taskUpdated(task, { priority: $event })"
-    />
-  </div>
-  <SummaryLine class="mt-8" />
 </template>
 
 <script>
@@ -29,6 +49,7 @@ import BaseCheckbox from "./components/BaseCheckbox.vue";
 import AddTaskInput from "./components/AddTaskInput.vue";
 import TodoListItem from "./components/TodoListItem.vue";
 import SummaryLine from "./components/SummaryLine.vue";
+import ProjectList from "./components/ProjectList.vue";
 
 export default {
   name: "App",
@@ -37,13 +58,19 @@ export default {
     AddTaskInput,
     TodoListItem,
     SummaryLine,
+    ProjectList,
   },
   data() {
     return {};
   },
   computed: {
     tasks() {
-      return this.$store.state.tasks;
+      // return this.$store.state.tasks;
+      return (
+        this.$store.state.projects.find(
+          (project) => project.id === this.$store.state.activeProjectId
+        )?.tasks ?? []
+      );
     },
     displayedTasks() {
       return [...this.tasks]
