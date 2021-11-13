@@ -14,7 +14,7 @@
         md:text-sm
       "
     >
-      <ProjectList :projects="[{}, {}]" />
+      <ProjectList :projects="projects" />
     </div>
     <div class="w-full md:w-2/3 xl:w-4/5">
       <div class="mb-4">
@@ -64,13 +64,12 @@ export default {
     return {};
   },
   computed: {
+    projects() {
+      return this.$store.getters.projectsWithStats;
+    },
     tasks() {
       // return this.$store.state.tasks;
-      return (
-        this.$store.state.projects.find(
-          (project) => project.id === this.$store.state.activeProjectId
-        )?.tasks ?? []
-      );
+      return this.$store.getters.activeProject?.tasks ?? [];
     },
     displayedTasks() {
       return [...this.tasks]

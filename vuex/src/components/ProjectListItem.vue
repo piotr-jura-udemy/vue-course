@@ -11,7 +11,7 @@
       cursor-pointer
     "
   >
-    <div>Project Name</div>
+    <div>{{ project.name }}</div>
     <div
       class="
         rounded-lg
@@ -23,7 +23,7 @@
         text-center
       "
     >
-      4
+      {{ project.notDoneCount }}
     </div>
   </div>
 </template>
