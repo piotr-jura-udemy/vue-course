@@ -25,7 +25,7 @@
 export default {
   computed: {
     tasks() {
-      return this.$store.state.tasks ?? [];
+      return this.$store.getters.activeProject?.tasks ?? [];
     },
     total() {
       return this.tasks.length;

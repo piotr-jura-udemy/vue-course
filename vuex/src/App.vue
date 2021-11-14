@@ -84,18 +84,27 @@ export default {
         this.$store.commit("setOnlyPending", newValue);
       },
     },
+    activeProjectId() {
+      return this.$store.state.activeProjectId;
+    },
   },
   methods: {
     taskAdded(task) {
       this.$store.commit("addTask", {
-        id: nextTaskId++,
-        description: task,
-        done: false,
-        priority: false,
+        projectId: this.activeProjectId,
+        task: {
+          id: nextTaskId++,
+          description: task,
+          done: false,
+          priority: false,
+        },
       });
     },
     taskUpdated(task, changes) {
-      this.$store.commit("updateTask", Object.assign(task, changes));
+      this.$store.commit("updateTask", {
+        projectId: this.activeProjectId,
+        task: Object.assign(task, changes),
+      });
     },
   },
 };

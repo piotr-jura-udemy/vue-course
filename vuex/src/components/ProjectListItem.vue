@@ -1,5 +1,6 @@
 <template>
   <div
+    @click="activateProject(project.id)"
     class="
       rounded-md
       py-2
@@ -10,6 +11,7 @@
       justify-between
       cursor-pointer
     "
+    :class="{ 'bg-gray-200': isActive }"
   >
     <div>{{ project.name }}</div>
     <div
@@ -31,5 +33,15 @@
 <script>
 export default {
   props: { project: Object },
+  computed: {
+    isActive() {
+      return this.$store.state.activeProjectId === this.project.id;
+    },
+  },
+  methods: {
+    activateProject(projectId) {
+      this.$store.commit("setActiveProject", projectId);
+    },
+  },
 };
 </script>
