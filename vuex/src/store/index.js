@@ -144,7 +144,7 @@ const store = createStore({
       state.activeProjectId = activeProjectId;
     },
   },
-  plugins: [localStoragePlugin]
+  plugins: [localStoragePlugin],
 });
 
 export default store;
