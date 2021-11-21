@@ -45,6 +45,8 @@
 <script>
 let nextTaskId = 100;
 
+import { mapGetters, mapState, mapMutations } from "vuex";
+
 import BaseCheckbox from "./components/BaseCheckbox.vue";
 import AddTaskInput from "./components/AddTaskInput.vue";
 import TodoListItem from "./components/TodoListItem.vue";
@@ -70,13 +72,22 @@ export default {
     return {};
   },
   computed: {
-    projects() {
-      return this.$store.getters.projectsWithStats;
-    },
+    ...mapState(["activeProjectId"]),
+    ...mapGetters({
+      projects: "projectsWithStats",
+      activeProject: "activeProject",
+    }),
+    // projects() {
+    //   return this.$store.getters.projectsWithStats;
+    // },
     tasks() {
       // return this.$store.state.tasks;
-      return this.$store.getters.activeProject?.tasks ?? [];
+      // return this.$store.getters.activeProject?.tasks ?? [];
+      return this.activeProject?.tasks ?? [];
     },
+    // activeProjectId() {
+    //   return this.$store.state.activeProjectId;
+    // }
     displayedTasks() {
       return [...this.tasks]
         .sort((a, b) => Number(b.priority) - Number(a.priority))
@@ -87,27 +98,30 @@ export default {
         return this.$store.state.onlyPending;
       },
       set(newValue) {
-        this.$store.commit(SET_ONLY_PENDING, newValue);
+        this[SET_ONLY_PENDING](newValue);
+        // this.$store.commit(SET_ONLY_PENDING, newValue);
       },
-    },
-    activeProjectId() {
-      return this.$store.state.activeProjectId;
     },
   },
   methods: {
+    ...mapMutations([SET_ONLY_PENDING, ADD_TASK, UPDATE_TASK]),
     taskAdded(task) {
-      this.$store.commit(ADD_TASK, {
-        projectId: this.activeProjectId,
-        task: {
-          id: nextTaskId++,
-          description: task,
-          done: false,
-          priority: false,
-        },
-      });
+      this[ADD_TASK](
+        // this.$store.commit(ADD_TASK,
+        {
+          projectId: this.activeProjectId,
+          task: {
+            id: nextTaskId++,
+            description: task,
+            done: false,
+            priority: false,
+          },
+        }
+      );
     },
     taskUpdated(task, changes) {
-      this.$store.commit(UPDATE_TASK, {
+      // this.$store.commit(UPDATE_TASK,
+      this[UPDATE_TASK]({
         projectId: this.activeProjectId,
         task: Object.assign(task, changes),
       });
