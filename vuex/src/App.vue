@@ -57,6 +57,8 @@ import {
   SET_ONLY_PENDING,
 } from "./store/mutation-types";
 
+import { mapGetters, mapState } from "vuex";
+
 export default {
   name: "App",
   components: {
@@ -69,14 +71,28 @@ export default {
   data() {
     return {};
   },
+  // computed: mapState([]),
   computed: {
-    projects() {
-      return this.$store.getters.projectsWithStats;
-    },
-    tasks() {
-      // return this.$store.state.tasks;
-      return this.$store.getters.activeProject?.tasks ?? [];
-    },
+    ...mapState(["activeProjectId"]),
+    ...mapGetters({
+      projects: "projectsWithStats",
+      // activeProject: "activeProject",
+      tasks: "activeProjectTasks",
+    }),
+    // ...mapState({ activeId: "activeProjectId" }),
+    // ...mapState({
+    // activeId: (state) => state.activeProjectId ?? 1,
+    // activeId(state) {
+    //   this.projects
+    // }
+    // }),
+    // projects() {
+    //   return this.$store.getters.projectsWithStats;
+    // },
+    // tasks() {
+    //   // return this.$store.state.tasks;
+    //   return this.activeProject?.tasks ?? [];
+    // },
     displayedTasks() {
       return [...this.tasks]
         .sort((a, b) => Number(b.priority) - Number(a.priority))
