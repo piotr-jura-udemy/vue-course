@@ -57,7 +57,7 @@ import {
   SET_ONLY_PENDING,
 } from "./store/mutation-types";
 
-import { mapGetters, mapState } from "vuex";
+import { mapGetters, mapState, mapMutations } from "vuex";
 
 export default {
   name: "App",
@@ -103,7 +103,7 @@ export default {
         return this.$store.state.onlyPending;
       },
       set(newValue) {
-        this.$store.commit(SET_ONLY_PENDING, newValue);
+        this[SET_ONLY_PENDING](newValue);
       },
     },
     activeProjectId() {
@@ -111,8 +111,9 @@ export default {
     },
   },
   methods: {
+    ...mapMutations([ADD_TASK, UPDATE_TASK, SET_ONLY_PENDING]),
     taskAdded(task) {
-      this.$store.commit(ADD_TASK, {
+      this[ADD_TASK]({
         projectId: this.activeProjectId,
         task: {
           id: nextTaskId++,
@@ -123,7 +124,7 @@ export default {
       });
     },
     taskUpdated(task, changes) {
-      this.$store.commit(UPDATE_TASK, {
+      this[UPDATE_TASK]({
         projectId: this.activeProjectId,
         task: Object.assign(task, changes),
       });

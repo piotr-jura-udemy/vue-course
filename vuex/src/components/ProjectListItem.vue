@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import { SET_ACTIVE_PROJECT } from "./../store/mutation-types";
 
 export default {
@@ -42,10 +42,6 @@ export default {
       return this.activeProjectId === this.project.id;
     },
   },
-  methods: {
-    activateProject(projectId) {
-      this.$store.commit(SET_ACTIVE_PROJECT, projectId);
-    },
-  },
+  methods: mapMutations({ activateProject: SET_ACTIVE_PROJECT }),
 };
 </script>
