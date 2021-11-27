@@ -32,7 +32,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import { SET_ACTIVE_PROJECT } from "./../store/mutation-types";
+import { SET_ACTIVE_PROJECT } from "../../store/mutation-types";
 
 export default {
   props: { project: Object },
