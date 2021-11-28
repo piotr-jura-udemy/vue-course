@@ -15,6 +15,7 @@
 <script>
 import BaseTextButton from "../base/BaseTextButton.vue";
 import BaseSmallListButton from "./../base/BaseSmallListButton.vue";
+import { mapState } from "vuex";
 
 export default {
   components: {
