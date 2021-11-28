@@ -9,13 +9,11 @@
         class="mb-2"
         @update:model-value="$emit('update:done', $event)"
         :model-value="done"
-        >Done</BaseCheckbox
-      >
+      >Done</BaseCheckbox>
       <BaseCheckbox
         @update:model-value="$emit('update:priority', $event)"
         :model-value="priority"
-        >Prioritized</BaseCheckbox
-      >
+      >Prioritized</BaseCheckbox>
     </div>
   </div>
 </template>
@@ -32,8 +30,15 @@ export default {
       type: Object,
       required: true,
     },
+    projectId: Number,
     done: Boolean,
     priority: Boolean,
+  },
+  provide() {
+    return {
+      task: this.task,
+      projectId: this.projectId
+    }
   },
   emits: ["update:done", "update:priority"],
 };
