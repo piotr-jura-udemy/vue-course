@@ -65,25 +65,25 @@ const store = createStore({
           name: "Life Project",
           tasks: [
             {
-              id: 1,
+              id: 101,
               description: "Visit parents",
               priority: false,
               done: false,
             },
             {
-              id: 2,
+              id: 102,
               description: "Visit uncles",
               priority: true,
               done: false,
             },
             {
-              id: 3,
+              id: 103,
               description: "Go around the world",
               priority: false,
               done: false,
             },
             {
-              id: 4,
+              id: 104,
               description: "Quit smoking",
               priority: false,
               done: false,
