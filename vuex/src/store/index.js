@@ -24,10 +24,10 @@ function getProjectAndTaskIndex(state, { projectId, taskId }) {
   }
 }
 
-const store = createStore({
+const moduleProjects = {
+  namespaced: true,
   state() {
     return {
-      onlyPending: false,
       activeProjectId: 1,
       projects: [
         {
@@ -145,9 +145,7 @@ const store = createStore({
         project.tasks[taskIndex] = payload.task;
       }
     },
-    [SET_ONLY_PENDING](state, payload) {
-      state.onlyPending = payload;
-    },
+
     [SET_ACTIVE_PROJECT](state, activeProjectId) {
       state.activeProjectId = activeProjectId;
     },
@@ -166,6 +164,27 @@ const store = createStore({
         projectId: fromProjectId
       });
     }
+  },
+};
+
+const moduleApp = {
+  namespaced: true,
+  state() {
+    return {
+      onlyPending: false,
+    }
+  },
+  mutations: {
+    [SET_ONLY_PENDING](state, payload) {
+      state.onlyPending = payload;
+    },
+  }
+};
+
+const store = createStore({
+  modules: {
+    project: moduleProjects,
+    app: moduleApp
   },
   plugins: [localStoragePlugin],
 });

@@ -58,8 +58,8 @@ export default {
   },
   // computed: mapState([]),
   computed: {
-    ...mapState(["activeProjectId"]),
-    ...mapGetters({
+    ...mapState("project", ["activeProjectId"]),
+    ...mapGetters("project", {
       projects: "projectsWithStats",
       // activeProject: "activeProject",
       tasks: "activeProjectTasks",
@@ -85,18 +85,19 @@ export default {
     },
     onlyPending: {
       get() {
-        return this.$store.state.onlyPending;
+        return this.$store.state.app.onlyPending;
       },
       set(newValue) {
         this[SET_ONLY_PENDING](newValue);
       },
     },
-    activeProjectId() {
-      return this.$store.state.activeProjectId;
-    },
+    // activeProjectId() {
+    //   return this.$store.state.activeProjectId;
+    // },
   },
   methods: {
-    ...mapMutations([ADD_TASK, UPDATE_TASK, SET_ONLY_PENDING]),
+    ...mapMutations("project", [ADD_TASK, UPDATE_TASK]),
+    ...mapMutations("app", [SET_ONLY_PENDING]),
     taskAdded(task) {
       this[ADD_TASK]({
         projectId: this.activeProjectId,
