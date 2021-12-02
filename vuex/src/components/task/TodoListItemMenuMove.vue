@@ -3,7 +3,7 @@
     <div class="uppercase text:lg md:text-xs text-gray-400 mb-2">Move where?</div>
     <div class="mb-2">
       <div v-for="project in projects" :key="project.id">
-        <BaseSmallListButton>→ {{ project.name }}</BaseSmallListButton>
+        <BaseSmallListButton @click="taskMoved(project.id)">→ {{ project.name }}</BaseSmallListButton>
       </div>
     </div>
     <div>
@@ -15,17 +15,33 @@
 <script>
 import BaseTextButton from "../base/BaseTextButton.vue";
 import BaseSmallListButton from "./../base/BaseSmallListButton.vue";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
+import { MOVE_TASK } from "./../../store/actions-types";
 
 export default {
   components: {
     BaseTextButton,
     BaseSmallListButton,
   },
-  inject: ['task', 'projectId'],
+  inject: ["task", "projectId"],
   emits: ["closed"],
+  methods: {
+    ...mapActions([MOVE_TASK]),
+    taskMoved(toProjectId) {
+      this[MOVE_TASK]({
+        taskId: this.task.id,
+        fromProjectId: this.projectId,
+        toProjectId
+      });
+      this.$emit("closed");
+    }
+  },
   computed: mapState({
-    projects: (state) => state.projects
+    projects(state) {
+      return state.projects.filter(
+        project => project.id !== this.projectId
+      );
+    }
   })
 };
 </script>
