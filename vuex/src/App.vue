@@ -96,7 +96,9 @@ export default {
     },
   },
   methods: {
-    ...mapMutations([ADD_TASK, UPDATE_TASK, SET_ONLY_PENDING]),
+    ...mapMutations(
+      [ADD_TASK, UPDATE_TASK, SET_ONLY_PENDING]
+    ),
     taskAdded(task) {
       this[ADD_TASK]({
         projectId: this.activeProjectId,
