@@ -18,7 +18,9 @@ import { SET_ACTIVE_PROJECT } from "../../store/mutation-types";
 export default {
   props: { project: Object },
   computed: {
-    ...mapState(["activeProjectId"]),
+    ...mapState({
+      activeProjectId: (state) => state.project.activeProjectId
+    }),
     isActive() {
       return this.activeProjectId === this.project.id;
     },

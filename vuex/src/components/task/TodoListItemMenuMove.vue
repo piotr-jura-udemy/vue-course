@@ -38,7 +38,7 @@ export default {
   },
   computed: mapState({
     projects(state) {
-      return state.projects.filter(
+      return state.project.projects.filter(
         project => project.id !== this.projectId
       );
     }

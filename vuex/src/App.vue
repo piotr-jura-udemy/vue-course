@@ -58,7 +58,9 @@ export default {
   },
   // computed: mapState([]),
   computed: {
-    ...mapState(["activeProjectId"]),
+    ...mapState({
+      activeProjectId: (state) => state.project.activeProjectId
+    }),
     ...mapGetters({
       projects: "projectsWithStats",
       // activeProject: "activeProject",
@@ -85,14 +87,11 @@ export default {
     },
     onlyPending: {
       get() {
-        return this.$store.state.onlyPending;
+        return this.$store.state.application.onlyPending;
       },
       set(newValue) {
         this[SET_ONLY_PENDING](newValue);
       },
-    },
-    activeProjectId() {
-      return this.$store.state.activeProjectId;
     },
   },
   methods: {
