@@ -25,6 +25,8 @@ export default {
       return this.activeProjectId === this.project.id;
     },
   },
-  methods: mapMutations({ activateProject: SET_ACTIVE_PROJECT }),
+  methods: mapMutations('project',
+    { activateProject: SET_ACTIVE_PROJECT }
+  ),
 };
 </script>
