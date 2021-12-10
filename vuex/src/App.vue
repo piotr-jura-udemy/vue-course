@@ -11,16 +11,18 @@
         </BaseCheckbox>
       </div>
       <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <TodoListItem
-          v-for="task in displayedTasks"
-          :task="task"
-          :project-id="activeProjectId"
-          :key="task.id"
-          :done="task.done"
-          :priority="task.priority"
-          @update:done="taskUpdated(task, { done: $event })"
-          @update:priority="taskUpdated(task, { priority: $event })"
-        />
+        <TransitionGroup name="fade">
+          <TodoListItem
+            v-for="task in displayedTasks"
+            :task="task"
+            :project-id="activeProjectId"
+            :key="task.id"
+            :done="task.done"
+            :priority="task.priority"
+            @update:done="taskUpdated(task, { done: $event })"
+            @update:priority="taskUpdated(task, { priority: $event })"
+          />
+        </TransitionGroup>
       </div>
       <SummaryLine class="mt-8" />
     </div>
@@ -124,3 +126,17 @@ export default {
   },
 };
 </script>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+.fade-move {
+  transition: transform 0.5s ease;
+}
+</style>

@@ -122,7 +122,7 @@ const mutations = {
   [ADD_TASK](state, payload) {
     getProjectById(
       state, payload.projectId
-    )?.tasks.push(payload.task);
+    )?.tasks.unshift(payload.task);
   },
   [REMOVE_TASK](state, payload) {
     const { project, taskIndex } = getProjectAndTaskIndex(

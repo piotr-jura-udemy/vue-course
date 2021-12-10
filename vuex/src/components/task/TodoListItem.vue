@@ -15,6 +15,7 @@
         :model-value="priority"
       >Prioritized</BaseCheckbox>
     </div>
+
     <TodoListItemMenu />
   </div>
 </template>
@@ -47,3 +48,4 @@ export default {
   emits: ["update:done", "update:priority"],
 };
 </script>
+

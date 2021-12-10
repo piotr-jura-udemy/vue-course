@@ -1,11 +1,12 @@
 <template>
   <div class="p-4 border-t border-gray-100 flex">
-    <div v-if="!showMenu">
-      <BaseTextButton @click="toggleMenu" class="mr-2" color="indigo">Move</BaseTextButton>
-      <BaseTextButton color="red" @click="taskRemoved">Delete</BaseTextButton>
-    </div>
-
-    <TodoListItemMenuMove v-else @closed="toggleMenu" />
+    <Transition name="fade" mode="out-in">
+      <div v-if="!showMenu">
+        <BaseTextButton @click="toggleMenu" class="mr-2" color="indigo">Move</BaseTextButton>
+        <BaseTextButton color="red" @click="taskRemoved">Delete</BaseTextButton>
+      </div>
+      <TodoListItemMenuMove v-else @closed="toggleMenu" />
+    </Transition>
   </div>
 </template>
 
@@ -25,7 +26,7 @@ export default {
     return { showMenu: false };
   },
   methods: {
-    ...mapMutations([REMOVE_TASK]),
+    ...mapMutations("project", [REMOVE_TASK]),
     taskRemoved() {
       this[REMOVE_TASK]({
         taskId: this.task.id,
@@ -38,3 +39,4 @@ export default {
   },
 };
 </script>
+
