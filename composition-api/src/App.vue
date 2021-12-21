@@ -1,21 +1,32 @@
-<script setup>
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import HelloWorld from './components/HelloWorld.vue'
+<script>
+import { ref, computed } from "vue"
+const START_FROM = 10
+export default {
+  // data() {
+  //   return {
+  //     counter: 0
+  //   }
+  // },
+  // computed: {
+  //   multiplied() {
+  //     return this.counter * 10;
+  //   }
+  // },
+  setup() {
+    const counter = ref(0)
+    const multiplied = computed(
+      () => counter.value * 10
+    )
+    const increase = () => counter.value++
+    return {
+      counter, multiplied, START_FROM,
+      increase
+    }
+  }
+}
 </script>
 
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + Vite" />
+  <div>Hello! {{ counter }}</div>
+  <button @click="increase">Increase</button>
 </template>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
