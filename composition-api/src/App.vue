@@ -5,7 +5,18 @@ export default {
   setup() {
     const counter = ref(0)
     const multiplied = computed(
-      () => counter.value * 10
+      {
+        get() {
+          return counter.value * 10
+        },
+        set(newValue) {
+          console.log(`Setter was called with ${newValue}`)
+        }
+      }
+    )
+    // multiplied.value = 10
+    const x2 = computed(
+      () => multiplied.value * counter.value + xxx.counter
     )
     const xxx = reactive({
       counter: 10
@@ -15,7 +26,8 @@ export default {
     const increase = () => counter.value++
     return {
       counter, multiplied, START_FROM,
-      increase, xxx, replaceArray, ra
+      increase, xxx, replaceArray, ra,
+      x2
     }
   }
 }
