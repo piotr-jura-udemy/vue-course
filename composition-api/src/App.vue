@@ -1,44 +1,48 @@
 <script>
-import { ref, computed, reactive } from "vue"
-const START_FROM = 10
+import { ref, computed, watch, reactive } from "vue"
+
+let timeout = null
+
 export default {
   setup() {
-    const counter = ref(0)
-    const multiplied = computed(
-      {
-        get() {
-          return counter.value * 10
-        },
-        set(newValue) {
-          console.log(`Setter was called with ${newValue}`)
-        }
-      }
+    const currentBalance = ref(0)
+    const inUSD = computed(
+      () => (currentBalance.value * 1.14).toFixed(2)
     )
-    // multiplied.value = 10
-    const x2 = computed(
-      () => multiplied.value * counter.value + xxx.counter
-    )
-    const xxx = reactive({
-      counter: 10
+    const sessionCounter = ref(0)
+    const history = ref([])
+    const exchangeRecords = reactive({
+      highestBalance: null
     })
-    const ra = ref([1, 2, 3])
-    const replaceArray = () => ra.value = [4, 5, 6]
-    const increase = () => counter.value++
+    watch(currentBalance, (newValue, oldValue) => {
+      clearTimeout(timeout)
+      timeout = setTimeout(() => {
+        sessionCounter.value++
+        history.value.push(newValue)
+
+        if (currentBalance.value > exchangeRecords.highestBalance) {
+          exchangeRecords.highestBalance = currentBalance.value
+        }
+      }, 500)
+    })
+    watch(history.value, () => console.log(`New history entry added - store it somewhere...`))
+    watch(() => exchangeRecords.highestBalance, () => console.log(`Record changed, save it somewhere...`));
+
     return {
-      counter, multiplied, START_FROM,
-      increase, xxx, replaceArray, ra,
-      x2
+      currentBalance,
+      inUSD,
+      sessionCounter,
+      history,
+      exchangeRecords
     }
   }
 }
 </script>
 
 <template>
-  <div>Hello! {{ counter }}</div>
-  <button @click="increase">Increase</button>
-
-  <button @click="replaceArray">Replace</button>
-
-  <div>{{ xxx.counter }}</div>
-  <div>{{ ra }}</div>
+  <div>Money in bank? {{ currentBalance }} 💶</div>
+  <div>This means (🇺🇸) {{ inUSD }} 💵</div>
+  <div>
+    <input type="text" v-model.number="currentBalance" />
+  </div>
 </template>
