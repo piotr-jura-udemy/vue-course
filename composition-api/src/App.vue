@@ -1,9 +1,11 @@
 <script>
 import { ref, computed, watch, reactive } from "vue"
+import Money from "./Money.vue"
 
 let timeout = null
 
 export default {
+  components: { Money },
   setup() {
     const currentBalance = ref(0)
     const inUSD = computed(
@@ -40,8 +42,9 @@ export default {
 </script>
 
 <template>
-  <div>Money in bank? {{ currentBalance }} 💶</div>
-  <div>This means (🇺🇸) {{ inUSD }} 💵</div>
+  <Money currency="EUR" :balance="currentBalance" />
+  <Money currency="USD" :balance="inUSD" />
+
   <div>
     <input type="text" v-model.number="currentBalance" />
   </div>
