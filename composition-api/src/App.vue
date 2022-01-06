@@ -9,7 +9,7 @@ export default {
   setup() {
     const currentBalance = ref(0)
     const inUSD = computed(
-      () => (currentBalance.value * 1.14).toFixed(2)
+      () => (currentBalance.value * 1.14)
     )
     const sessionCounter = ref(0)
     const history = ref([])
