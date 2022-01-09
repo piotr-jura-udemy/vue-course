@@ -7,18 +7,21 @@ const CURRENCY = {
 
 export default {
   props: ["currency", "balance"],
-  setup(props) {
-    console.log(props)
+  emits: ["updated"],
+  setup(props, { emit }) {
     const { balance } = toRefs(props)
-    // const balance = ref(props.balance)
     const formatted = computed(
       () => Number(balance.value).toFixed(2)
     )
-    return { CURRENCY, formatted }
+    const pressed = () => emit("updated", 100)
+    return { CURRENCY, formatted, pressed }
   }
 }
 </script>
 
 <template>
   <div>Cash in {{ currency }}: {{ formatted }} {{ CURRENCY[currency] }}</div>
+  <div>
+    <button @click="pressed">Emit!</button>
+  </div>
 </template>
