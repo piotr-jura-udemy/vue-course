@@ -1,5 +1,5 @@
 <script>
-import { ref, computed, watch, reactive } from "vue"
+import { ref, computed, watch, reactive, onMounted } from "vue"
 import Money from "./Money.vue"
 
 let timeout = null
@@ -9,7 +9,7 @@ export default {
   setup() {
     const currentBalance = ref(0)
     const inUSD = computed(
-      () => (currentBalance.value * 1.14)
+      () => (currentBalance.value * rate.value)
     )
     const sessionCounter = ref(0)
     const history = ref([])
@@ -27,8 +27,21 @@ export default {
         }
       }, 500)
     })
-    watch(history.value, () => console.log(`New history entry added - store it somewhere...`))
-    watch(() => exchangeRecords.highestBalance, () => console.log(`Record changed, save it somewhere...`));
+    watch(
+      history.value,
+      () => console.log(`New history entry added - store it somewhere...`)
+    )
+    watch(
+      () => exchangeRecords.highestBalance,
+      () => console.log(`Record changed, save it somewhere...`)
+    );
+    const rate = ref(1.14)
+    onMounted(
+      () => setInterval(
+        () => rate.value = [1.13, 1.14, 1.15][Math.floor(Math.random() * 3)],
+        1000
+      )
+    )
 
     return {
       currentBalance,
