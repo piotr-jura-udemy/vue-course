@@ -1,6 +1,8 @@
 <script>
 import { computed, toRefs } from "vue"
-import { useStore } from "vuex"
+// import { useStore } from "vuex"
+import { useRate } from "./composables/useRate"
+
 const CURRENCY = {
   USD: '💵',
   EUR: '💶'
@@ -11,8 +13,9 @@ export default {
   emits: ["updated"],
   setup(props, { emit }) {
     const { balance } = toRefs(props)
-    const store = useStore()
-    const rate = computed(() => store.state.rate)
+    // const store = useStore()
+    // const rate = computed(() => store.state.rate)
+    const { rate } = useRate()
     const formatted = computed(
       () => Number(balance.value).toFixed(2)
     )
