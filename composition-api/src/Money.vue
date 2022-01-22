@@ -1,4 +1,9 @@
 <script>
+console.log(`Im the script`)
+</script>
+
+<script setup>
+console.log(`Im the script-setup`)
 import { computed, toRefs } from "vue"
 // import { useStore } from "vuex"
 import { useRate } from "./composables/useRate"
@@ -8,21 +13,17 @@ const CURRENCY = {
   EUR: '💶'
 }
 
-export default {
-  props: ["currency", "balance"],
-  emits: ["updated"],
-  setup(props, { emit }) {
-    const { balance } = toRefs(props)
-    // const store = useStore()
-    // const rate = computed(() => store.state.rate)
-    const { rate } = useRate()
-    const formatted = computed(
-      () => Number(balance.value).toFixed(2)
-    )
-    const pressed = () => emit("updated", 100)
-    return { CURRENCY, formatted, pressed, rate }
-  }
-}
+const props = defineProps(["currency", "balance"])
+const emit = defineEmits(["updated"])
+
+const { balance } = toRefs(props)
+// const store = useStore()
+// const rate = computed(() => store.state.rate)
+const { rate } = useRate()
+const formatted = computed(
+  () => Number(balance.value).toFixed(2)
+)
+const pressed = () => emit("updated", 100)
 </script>
 
 <template>
