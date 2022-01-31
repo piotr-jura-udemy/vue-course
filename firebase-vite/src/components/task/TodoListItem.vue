@@ -19,31 +19,22 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { provide } from "vue"
 import BaseCheckbox from "../base/BaseCheckbox.vue"
 import TodoListItemMenu from "./TodoListItemMenu.vue"
-import { computed } from "vue"
 
-export default {
-  components: {
-    BaseCheckbox,
-    TodoListItemMenu,
+const props = defineProps({
+  task: {
+    type: Object,
+    required: true,
   },
-  props: {
-    task: {
-      type: Object,
-      required: true,
-    },
-    projectId: String,
-    done: Boolean,
-    priority: Boolean,
-  },
-  provide() {
-    return {
-      task: computed(() => this.task),
-      projectId: computed(() => this.projectId),
-    };
-  },
-  emits: ["update:done", "update:priority"],
-};
+  projectId: String,
+  done: Boolean,
+  priority: Boolean,
+})
+defineEmits(["update:done", "update:priority"])
+
+provide("task", props.task)
+provide("projectId", props.projectId)
 </script>

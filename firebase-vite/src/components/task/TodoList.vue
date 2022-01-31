@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+  <div class="grid grid-cols-1 gap-4 lg:grid-cols-3" v-if="displayedTasks.length">
     <TodoListItem
       v-for="task in displayedTasks"
       :task="task"
@@ -11,6 +11,7 @@
       @update:priority="taskUpdated(task, { priority: $event })"
     />
   </div>
+  <div v-else class="text-xl text-gray-400 px-1">No tasks left!</div>
 </template>
 
 <script setup>
