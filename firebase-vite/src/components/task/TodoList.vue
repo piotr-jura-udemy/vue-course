@@ -53,6 +53,7 @@ watch(activeProjectId, (projectId, oldProjectId) => {
 
 const displayedTasks = computed(() =>
   [...tasks.value]
+    .filter(t => t)
     .sort((a, b) => Number(b.priority) - Number(a.priority))
     .filter((task) => !props.onlyPending || !task.done)
 )

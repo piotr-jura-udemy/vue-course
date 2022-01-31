@@ -37,9 +37,9 @@ export const addProject = async (name = "") => {
 
 export const addTask = async (projectId, task) => {
   console.log('Firebase/addTask: adding task')
+  let taskDocRef = doc(collection(db, "projects", projectId, "tasks"))
 
   await runTransaction(db, async (transaction) => {
-    console.log(projectId)
     const projectDocRef = doc(db, "projects", projectId)
     const projectDoc = await transaction.get(projectDocRef)
 
@@ -49,14 +49,14 @@ export const addTask = async (projectId, task) => {
 
     const taskCount = projectDoc.data().taskCount + 1
     // This generates the new unique ID for the new document
-    const taskDocRef = doc(collection(db, "projects", projectId, "tasks"))
+    taskDocRef = doc(collection(db, "projects", projectId, "tasks"))
 
     transaction.set(taskDocRef, task)
     transaction.update(projectDocRef, { taskCount })
   })
 
   return {
-    id: doc.id,
+    id: taskDocRef?.id,
     ...task
   }
 }
@@ -75,6 +75,39 @@ export const updateTask = async ({ projectId, task }) => {
 
     transaction.update(taskDocRef, task)
     transaction.update(projectDocRef, { taskDoneCount })
+  })
+}
+
+export const deleteTask = async ({ projectId, taskId }) => {
+  console.log(`Firebase/deleteTask: deleting task ${taskId}`)
+
+  await runTransaction(db, async (transaction) => {
+    // Get project doc reference
+    const projectDocRef = doc(db, "projects", projectId)
+    // Read the project doc
+    const projectDoc = await transaction.get(projectDocRef)
+
+    if (!projectDoc.exists()) {
+      throw `Project ${projectId} does not exist!`
+    }
+
+    // Get the task doc reference
+    const taskDocRef = doc(db, "projects", projectId, "tasks", taskId)
+    // Read the task doc
+    const taskDoc = await transaction.get(taskDocRef)
+
+    if (!taskDoc.exists()) {
+      throw `Task ${taskId} does not exist!`
+    }
+
+    // Recalculate taskCount and taskDoneCount
+    const taskCount = projectDoc.data().taskCount - 1
+    const taskDoneCount = projectDoc.data().taskDoneCount - (taskDoc.data().done ? 1 : 0)
+
+    // Delete the task doc
+    transaction.delete(taskDocRef)
+    // Update project stats
+    transaction.update(projectDocRef, { taskCount, taskDoneCount })
   })
 }
 

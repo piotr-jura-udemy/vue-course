@@ -60,11 +60,7 @@ const mutations = {
     state.tasks.push(payload.task)
   },
   [REMOVE_TASK](state, payload) {
-    const { project, taskIndex } = getProjectAndTaskIndex(state, payload)
 
-    if (taskIndex !== undefined && taskIndex !== -1) {
-      project.tasks.splice(taskIndex, 1)
-    }
   },
   [UPDATE_TASK](state, payload) {
     const { project, taskIndex } = getProjectAndTaskIndex(state, payload)

@@ -67,9 +67,9 @@ const taskAdded = async (description) => {
     done: false,
     priority: false,
   })
-  store.commit(`project/${ADD_TASK}`, {
-    projectId: activeProjectId.value,
-    task,
-  })
+  // store.commit(`project/${ADD_TASK}`, {
+  //   projectId: activeProjectId.value,
+  //   task,
+  // })
 }
 </script>

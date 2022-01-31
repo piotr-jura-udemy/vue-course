@@ -15,15 +15,18 @@ import { useStore } from "vuex"
 import BaseTextButton from "./../base/BaseTextButton.vue"
 import TodoListItemMenuMove from "./TodoListItemMenuMove.vue"
 import { REMOVE_TASK } from "./../../store/mutation-types"
+import { deleteTask } from "./../../firebase"
 
 const store = useStore()
 const task = inject("task")
 const projectId = inject("projectId")
 const showMenu = ref(false)
-const taskRemoved = () =>
+const taskRemoved = async () => {
+  await deleteTask({ projectId: projectId.value, taskId: task.value.id })
   store.commit(`project/${REMOVE_TASK}`, {
     taskId: task.value.id,
     projectId: projectId.value,
   })
+}
 const toggleMenu = () => (showMenu.value = !showMenu.value)
 </script>

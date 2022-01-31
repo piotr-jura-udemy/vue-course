@@ -1,10 +1,13 @@
 <template>
   <div>
-    <div class="uppercase text:lg md:text-xs text-gray-400 mb-2">Move where?</div>
+    <div class="uppercase text:xl md:text-sm text-gray-400 mb-2 font-bold">Move where?</div>
     <div class="mb-2">
-      <div v-for="project in projects" :key="project.id">
-        <BaseSmallListButton @click="taskMoved(project.id)">→ {{ project.name }}</BaseSmallListButton>
+      <div v-if="projects.length">
+        <div v-for="project in projects" :key="project.id">
+          <BaseSmallListButton @click="taskMoved(project.id)">→ {{ project.name }}</BaseSmallListButton>
+        </div>
       </div>
+      <div v-else>No other projects</div>
     </div>
     <div>
       <BaseTextButton @click="$emit('closed')" color="red">Cancel</BaseTextButton>

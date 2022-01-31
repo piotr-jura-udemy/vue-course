@@ -3,7 +3,7 @@
     class="bg-white shadow-sm rounded-md text-gray-700 flex flex-col"
     :class="{ 'opacity-25 line-through': task.done }"
   >
-    <div class="p-4 border-b border-gray-100">{{ task.description }}</div>
+    <div class="p-4 border-b border-gray-100 text-xl md:text-base">{{ task.description }}</div>
     <div class="p-4 bg-white flex-grow">
       <BaseCheckbox
         class="mb-2"
