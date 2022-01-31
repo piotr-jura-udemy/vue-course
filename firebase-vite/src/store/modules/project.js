@@ -35,12 +35,13 @@ const getters = {
     return state.projects.map((project) => ({
       id: project.id,
       ...project,
-      notDoneCount: project.tasks.filter((task) => !task.done).length,
+      // notDoneCount: project.tasks?.filter((task) => !task.done).length ?? 0,
+      notDoneCount: project.taskCount - project.taskDoneCount,
     }))
   },
-  activeProjectTasks(_, getters) {
-    return getters.activeProject?.tasks ?? []
-  },
+  // activeProjectTasks(_, getters) {
+  //   return getters.activeProject?.tasks ?? []
+  // },
 }
 
 const mutations = {
@@ -56,7 +57,7 @@ const mutations = {
   }
   */
   [ADD_TASK](state, payload) {
-    getProjectById(state, payload.projectId)?.tasks.push(payload.task)
+    state.tasks.push(payload.task)
   },
   [REMOVE_TASK](state, payload) {
     const { project, taskIndex } = getProjectAndTaskIndex(state, payload)

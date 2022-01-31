@@ -20,7 +20,7 @@ import { computed } from "vue"
 import { useStore } from "vuex"
 
 const store = useStore()
-const tasks = computed(() => store.getters[`project/activeProjectTasks`])
+const tasks = computed(() => store.state.project.tasks)
 const total = computed(() => tasks.value.length)
 const completion = computed(() =>
   Math.ceil(

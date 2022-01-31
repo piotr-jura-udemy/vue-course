@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, collection, addDoc, onSnapshot, query, getDocs, updateDoc, doc } from "firebase/firestore"
+import { getFirestore, collection, addDoc, onSnapshot, query, runTransaction, updateDoc, doc } from "firebase/firestore"
 import { ref } from "vue"
 
 const config = {
@@ -37,10 +37,23 @@ export const addProject = async (name = "") => {
 
 export const addTask = async (projectId, task) => {
   console.log('Firebase/addTask: adding task')
-  const doc = await addDoc(
-    collection(db, "projects", projectId, "tasks"),
-    task
-  )
+
+  await runTransaction(db, async (transaction) => {
+    console.log(projectId)
+    const projectDocRef = doc(db, "projects", projectId)
+    const projectDoc = await transaction.get(projectDocRef)
+
+    if (!projectDoc.exists()) {
+      throw "Project does not exist"
+    }
+
+    const taskCount = projectDoc.data().taskCount + 1
+    // This generates the new unique ID for the new document
+    const taskDocRef = doc(collection(db, "projects", projectId, "tasks"))
+
+    transaction.set(taskDocRef, task)
+    transaction.update(projectDocRef, { taskCount })
+  })
 
   return {
     id: doc.id,
@@ -48,34 +61,33 @@ export const addTask = async (projectId, task) => {
   }
 }
 
-export const updateProject = async () => {
-
-}
-
 export const updateTask = async ({ projectId, task }) => {
-  await updateDoc(doc(db, "projects", projectId, "tasks", task.id), task)
+  await runTransaction(db, async (transaction) => {
+    const projectDocRef = doc(db, "projects", projectId)
+    const projectDoc = await transaction.get(projectDocRef)
 
-  return task
+    if (!projectDoc.exists()) {
+      throw "Project does not exist"
+    }
+
+    const taskDoneCount = projectDoc.data().taskDoneCount + (task.done ? 1 : -1)
+    const taskDocRef = doc(db, "projects", projectId, "tasks", task.id)
+
+    transaction.update(taskDocRef, task)
+    transaction.update(projectDocRef, { taskDoneCount })
+  })
 }
 
 export const useListProjects = () => {
   const projectList = ref([])
   const q = query(collection(db, "projects"))
-  const unsubProjectList = onSnapshot(q, async (querySnapshot) => {
-    console.log('Firebase/useListProjects: getting projects snapshot')
-    projectList.value = await Promise.all(
-      querySnapshot.docs.map(async doc => {
-        const q = query(collection(db, "projects", doc.id, "tasks"));
-        const querySnapshot = await getDocs(q)
-        const tasks = querySnapshot.docs.map(
-          doc => ({ id: doc.id, ...doc.data() })
-        )
 
-        return {
-          id: doc.id,
-          ...doc.data(),
-          tasks
-        }
+  const unsubProjectList = onSnapshot(q, (querySnapshot) => {
+    console.log('Firebase/useListProjects: getting projects snapshot')
+    projectList.value = querySnapshot.docs.map(
+      doc => ({
+        id: doc.id,
+        ...doc.data()
       })
     )
   })
@@ -88,17 +100,15 @@ export const useListProjects = () => {
 
 export const useProjectTasks = (projectId) => {
   const taskList = ref([])
-
   const q = query(collection(db, "projects", projectId, "tasks"))
-  const unsubProjectTasks = onSnapshot(q, async (querySnapshot) => {
+
+  const unsubProjectTasks = onSnapshot(q, (querySnapshot) => {
     console.log("Firebase/useProjectTasks: getting project tasks snapshot")
-    taskList.value = await Promise.all(
-      querySnapshot.docs.map(
-        async doc => ({
-          id: doc.id,
-          ...doc.data()
-        })
-      )
+    taskList.value = querySnapshot.docs.map(
+      doc => ({
+        id: doc.id,
+        ...doc.data()
+      })
     )
   })
 
