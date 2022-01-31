@@ -10,7 +10,7 @@ const config = {
   messagingSenderId: "962104481558",
   appId: "1:962104481558:web:0466120c2e3f74910ae237",
   measurementId: "G-SPGNM40GJQ"
-};
+}
 
 const app = initializeApp(config)
 const db = getFirestore(app)
@@ -20,8 +20,10 @@ export const addProject = async (name = "") => {
     collection(db, "projects"),
     {
       name,
+      taskCount: 0,
+      doneTaskCount: 0
     }
-  );
+  )
 
   await addDoc(
     collection(db, "projects", project.id, "tasks"),
@@ -30,7 +32,7 @@ export const addProject = async (name = "") => {
       done: false,
       priority: false
     }
-  );
+  )
 }
 
 export const addTask = async (projectId, task) => {
