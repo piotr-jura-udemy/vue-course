@@ -20,10 +20,12 @@ export const addProject = async (name = "") => {
     collection(db, "projects"),
     {
       name,
-      taskCount: 0,
-      doneTaskCount: 0
+      taskCount: 1,
+      taskDoneCount: 0
     }
   )
+
+  console.log(project)
 
   await addDoc(
     collection(db, "projects", project.id, "tasks"),
