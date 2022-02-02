@@ -22,9 +22,11 @@ import { useStore } from "vuex"
 const store = useStore()
 const tasks = computed(() => store.state.project.tasks)
 const total = computed(() => tasks.value.length)
-const completion = computed(() => Math.ceil(
-  (tasks.value.filter((task) => task.done).length / total.value) * 100
-))
+const completion = computed(
+  () => total.value ? Math.ceil(
+    (tasks.value.filter((task) => task.done).length / total.value) * 100
+  ) : 0
+)
 const prioritzed = computed(
   () => tasks.value.filter((task) => task.priority).length
 )

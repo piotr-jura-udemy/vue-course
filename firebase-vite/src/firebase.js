@@ -25,8 +25,6 @@ export const addProject = async (name = "") => {
     }
   )
 
-  console.log(project)
-
   await addDoc(
     collection(db, "projects", project.id, "tasks"),
     {
@@ -39,7 +37,6 @@ export const addProject = async (name = "") => {
 
 export const addTask = async (projectId, task) => {
   console.log('Firebase/addTask: adding task')
-  let taskDocRef = doc(collection(db, "projects", projectId, "tasks"))
 
   await runTransaction(db, async (transaction) => {
     const projectDocRef = doc(db, "projects", projectId)
@@ -51,7 +48,7 @@ export const addTask = async (projectId, task) => {
 
     const taskCount = projectDoc.data().taskCount + 1
     // This generates the new unique ID for the new document
-    taskDocRef = doc(collection(db, "projects", projectId, "tasks"))
+    const taskDocRef = doc(collection(db, "projects", projectId, "tasks"))
 
     transaction.set(taskDocRef, task)
     transaction.update(projectDocRef, { taskCount })
@@ -113,6 +110,50 @@ export const deleteTask = async ({ projectId, taskId }) => {
   })
 }
 
+export const moveTask = async ({ fromProjectId, toProjectId, taskId }) => {
+  await runTransaction(db, async (transaction) => {
+    const fromProjectDocRef = doc(db, "projects", fromProjectId)
+    const fromProjectDoc = await transaction.get(fromProjectDocRef)
+
+    if (!fromProjectDoc.exists()) {
+      throw `Project ${fromProjectId} does not exist`
+    }
+
+    const toProjectDocRef = doc(db, "projects", toProjectId)
+    const toProjectDoc = await transaction.get(toProjectDocRef)
+
+    if (!toProjectDoc.exists()) {
+      throw `Project ${toProjectId} does not exist`
+    }
+
+    // Get the task ref & read the task
+    const taskRef = doc(db, "projects", fromProjectId, "tasks", taskId)
+    const taskDoc = await transaction.get(taskRef)
+
+    if (!taskDoc.exists()) {
+      throw `Task ${taskId} does not exist`
+    }
+
+    const taskDocData = taskDoc.data()
+
+    let taskCount = fromProjectDoc.data().taskCount - 1
+    let taskDoneCount = fromProjectDoc.data().taskDoneCount - (taskDocData.done ? 1 : 0)
+    // This generates the new unique ID for the new document
+    const newTaskDocRef = doc(collection(db, "projects", toProjectId, "tasks"))
+    // Add the new task
+    transaction.set(newTaskDocRef, taskDocData)
+    // Set project numbers
+    transaction.update(fromProjectDocRef, { taskCount, taskDoneCount })
+    // Remove the original task
+    transaction.delete(taskRef)
+
+    taskCount = toProjectDoc.data().taskCount + 1
+    taskDoneCount = toProjectDoc.data().taskDoneCount + (taskDocData.done ? 1 : 0)
+
+    transaction.update(toProjectDocRef, { taskCount, taskDoneCount })
+  })
+}
+
 export const useListProjects = () => {
   const projectList = ref([])
   const q = query(collection(db, "projects"))
@@ -145,6 +186,7 @@ export const useProjectTasks = (projectId) => {
         ...doc.data()
       })
     )
+    console.log(taskList.value)
   })
 
   return {

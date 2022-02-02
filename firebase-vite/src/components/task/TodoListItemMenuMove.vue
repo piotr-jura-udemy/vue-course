@@ -20,23 +20,27 @@ import { computed, inject } from "vue"
 import { useStore } from "vuex"
 import BaseTextButton from "../base/BaseTextButton.vue"
 import BaseSmallListButton from "./../base/BaseSmallListButton.vue"
-import { MOVE_TASK } from "./../../store/actions-types"
+// import { MOVE_TASK } from "./../../store/actions-types"
+import { moveTask } from "./../../firebase"
 
 const task = inject("task")
 const projectId = inject("projectId")
 const emit = defineEmits(["closed"])
 const store = useStore()
-const taskMoved = (toProjectId) => {
-  store.dispatch(`project/${MOVE_TASK}`, {
-    taskId: task.value.id,
-    fromProjectId: projectId.value,
-    toProjectId,
+const taskMoved = async (toProjectId) => {
+  await moveTask({
+    fromProjectId: projectId, toProjectId, taskId: task.id
   })
+  // store.dispatch(`project/${MOVE_TASK}`, {
+  //   taskId: task.id,
+  //   fromProjectId: projectId,
+  //   toProjectId,
+  // })
   emit("closed")
 }
 const projects = computed(() =>
   store.state.project.projects.filter(
-    (project) => project.id !== projectId.value
+    (project) => project.id !== projectId
   )
 )
 </script>
