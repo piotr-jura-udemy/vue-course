@@ -15,7 +15,7 @@
 import { computed } from "vue";
 import { useStore } from "vuex";
 import { SET_ACTIVE_PROJECT } from "../../store/mutation-types";
-import { useUser } from "./../../firebase"
+import { useUser } from "./../../firebase/user"
 
 const { setActiveProjectId } = useUser()
 

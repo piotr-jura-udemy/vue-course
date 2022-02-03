@@ -21,7 +21,7 @@ import { useStore } from "vuex"
 import BaseTextButton from "../base/BaseTextButton.vue"
 import BaseSmallListButton from "./../base/BaseSmallListButton.vue"
 // import { MOVE_TASK } from "./../../store/actions-types"
-import { moveTask } from "./../../firebase"
+import { moveTask } from "./../../firebase/project"
 
 const task = inject("task")
 const projectId = inject("projectId")

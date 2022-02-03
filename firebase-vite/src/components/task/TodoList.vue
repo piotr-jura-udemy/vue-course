@@ -17,7 +17,7 @@
 <script setup>
 import { watch, computed, onBeforeUnmount } from "vue"
 import { useStore } from "vuex"
-import { useProjectTasks, updateTask } from "./../../firebase"
+import { useProjectTasks, updateTask } from "./../../firebase/project"
 import TodoListItem from "./TodoListItem.vue"
 import {
   SET_TASKS

@@ -9,5 +9,5 @@ import ProjectAdd from "./ProjectAdd.vue"
 
 defineProps({
   projects: Array,
-});
+})
 </script>

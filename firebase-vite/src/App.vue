@@ -31,7 +31,8 @@ import {
   SET_PROJECTS,
   SET_ACTIVE_PROJECT
 } from "./store/mutation-types"
-import { useListProjects, addTask, useUser } from "./firebase"
+import { useListProjects, addTask } from "./firebase/project"
+import { useUser } from "./firebase/user"
 
 const store = useStore()
 const { projectList, unsubProjectList } = useListProjects()

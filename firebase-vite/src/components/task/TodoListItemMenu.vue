@@ -15,7 +15,7 @@ import { ref, inject } from "vue"
 import BaseTextButton from "./../base/BaseTextButton.vue"
 import TodoListItemMenuMove from "./TodoListItemMenuMove.vue"
 // import { REMOVE_TASK } from "./../../store/mutation-types"
-import { deleteTask } from "./../../firebase"
+import { deleteTask } from "./../../firebase/project"
 
 // const store = useStore()
 const task = inject("task")

@@ -24,7 +24,7 @@
 
 <script setup>
 import { ref, watch } from "vue"
-import { addProject } from "./../../firebase"
+import { addProject } from "./../../firebase/project"
 
 const showMenu = ref(false)
 const projectName = ref("")

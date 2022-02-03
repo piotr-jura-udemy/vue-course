@@ -1,19 +1,6 @@
-import { initializeApp } from 'firebase/app'
-import { getFirestore, collection, addDoc, onSnapshot, query, runTransaction, updateDoc, doc } from "firebase/firestore"
+import { db } from "./firebase"
+import { collection, addDoc, onSnapshot, query, runTransaction, doc } from "firebase/firestore"
 import { ref } from "vue"
-
-const config = {
-  apiKey: "AIzaSyCCdrblzGCg39iqlgQlR6eSiZ0NVgu2BLo",
-  authDomain: "vue-firebase-6d1c6.firebaseapp.com",
-  projectId: "vue-firebase-6d1c6",
-  storageBucket: "vue-firebase-6d1c6.appspot.com",
-  messagingSenderId: "962104481558",
-  appId: "1:962104481558:web:0466120c2e3f74910ae237",
-  measurementId: "G-SPGNM40GJQ"
-}
-
-const app = initializeApp(config)
-const db = getFirestore(app)
 
 export const addProject = async (name = "") => {
   const project = await addDoc(
@@ -192,27 +179,5 @@ export const useProjectTasks = (projectId) => {
   return {
     taskList,
     unsubProjectTasks
-  }
-}
-
-export const useUser = () => {
-  const userId = "Xjax1gr4MyY4nQyrubXN"
-  const user = ref({})
-
-  const unsubUser = onSnapshot(
-    doc(db, "users", userId), (doc) => user.value = doc.data()
-  )
-
-  const setActiveProjectId = async (activeProjectId) => await updateDoc(
-    doc(db, "users", userId),
-    {
-      activeProjectId
-    }
-  )
-
-  return {
-    user,
-    unsubUser,
-    setActiveProjectId
   }
 }
