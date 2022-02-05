@@ -1,7 +1,7 @@
 <template>
   <div>
     <button
-      class="w-full rounded-md mb-2 p-2 text-left hover:bg-gray-100"
+      class="w-full rounded-md mb-2 p-2 text-left hover:bg-gray-200"
       @click="showMenu = !showMenu"
     >
       <span v-if="!showMenu">➕ Add New</span>

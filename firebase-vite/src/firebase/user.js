@@ -1,21 +1,22 @@
 import { onSnapshot, updateDoc, doc } from "firebase/firestore"
 import { ref } from "vue"
 import { db } from "./firebase"
-import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "firebase/auth";
 
 const auth = getAuth()
+const user = ref({})
 const currentUser = ref(null)
 
-onAuthStateChanged(auth, (user) => {
-  if (user) {
+onAuthStateChanged(auth, (data) => {
+  if (data) {
     // User is signed in, see docs for a list of available properties
     // https://firebase.google.com/docs/reference/js/firebase.User
-    currentUser.value = user
+    user.value = data
     // ...
   } else {
     // User is signed out
     // ...
-    currentUser.value = null
+    user.value = null
   }
   console.log(currentUser.value)
 })
@@ -33,9 +34,25 @@ export const createUser = async (email, password) => {
   }
 }
 
+export const login = async (email, password) => {
+  try {
+    const result = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    )
+    currentUser.value = result.user
+  } catch (e) {
+    throw e
+  }
+}
+
+export const logout = async () => {
+  await signOut(auth)
+}
+
 export const useUser = () => {
   const userId = "Xjax1gr4MyY4nQyrubXN"
-  const user = ref({})
 
   const unsubUser = onSnapshot(
     doc(db, "users", userId), (doc) => user.value = doc.data()
@@ -50,7 +67,9 @@ export const useUser = () => {
 
   return {
     user,
+    currentUser,
     unsubUser,
-    setActiveProjectId
+    setActiveProjectId,
+    logout
   }
 }

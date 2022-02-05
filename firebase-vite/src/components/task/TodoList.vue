@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { watch, computed, onBeforeUnmount } from "vue"
+import { watch, computed, onBeforeUnmount, ref } from "vue"
 import { useStore } from "vuex"
 import { useProjectTasks, updateTask } from "./../../firebase/project"
 import TodoListItem from "./TodoListItem.vue"
@@ -60,9 +60,13 @@ const displayedTasks = computed(() =>
 )
 
 import { UPDATE_TASK } from "./../../store/mutation-types"
+const updatingTask = ref(false)
 
 const taskUpdated = async (data, changes) => {
+  if (updatingTask.value) { return }
+
   console.log(`TodoList: task updated`)
+  updatingTask.value = true
   const task = Object.assign(data, changes)
   const payload = {
     projectId: activeProjectId.value,
@@ -70,5 +74,6 @@ const taskUpdated = async (data, changes) => {
   }
   await updateTask(payload)
   store.commit(`project/${UPDATE_TASK}`, payload)
+  updatingTask.value = false
 }
 </script>

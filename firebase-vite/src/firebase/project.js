@@ -61,6 +61,8 @@ export const updateTask = async ({ projectId, task }) => {
 
     transaction.update(taskDocRef, task)
     transaction.update(projectDocRef, { taskDoneCount })
+
+    console.log(task.done, taskDoneCount, 'updatedTask')
   })
 }
 
