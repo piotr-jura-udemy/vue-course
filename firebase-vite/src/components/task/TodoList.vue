@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-1 gap-4 lg:grid-cols-3" v-if="displayedTasks.length">
+  <div class="grid grid-cols-1 gap-4 lg:grid-cols-3" v-if="!loadingTasks && displayedTasks.length">
     <TodoListItem
       v-for="task in displayedTasks"
       :task="task"
@@ -11,7 +11,11 @@
       @update:priority="taskUpdated(task, { priority: $event })"
     />
   </div>
-  <div v-else class="text-xl text-gray-400 px-1">No tasks left!</div>
+  <div v-if="loadingTasks" class="text-xl text-gray-400 px-1">Loading...</div>
+  <div
+    v-if="!loadingTasks && 0 === displayedTasks.length"
+    class="text-xl text-gray-400 px-1"
+  >No tasks left!</div>
 </template>
 
 <script setup>
@@ -34,21 +38,24 @@ const activeProjectId = computed(() => props.projectId)
 let beforeUnmountHandler = () => { }
 
 onBeforeUnmount(() => {
-  console.log(`TodoList: unmounted!`)
   beforeUnmountHandler()
 })
+
+const loadingTasks = ref(false)
 
 watch(activeProjectId, (projectId, oldProjectId) => {
   if (projectId === oldProjectId || projectId === undefined) {
     return
   }
 
-  console.log('TodoList: Project id changed!')
+  loadingTasks.value = true
+
   const { taskList, unsubProjectTasks } = useProjectTasks(projectId)
   beforeUnmountHandler = unsubProjectTasks
 
   watch(taskList, (tasks) => {
     store.commit(`project/${SET_TASKS}`, tasks)
+    loadingTasks.value = false
   })
 })
 
@@ -65,7 +72,6 @@ const updatingTask = ref(false)
 const taskUpdated = async (data, changes) => {
   if (updatingTask.value) { return }
 
-  console.log(`TodoList: task updated`)
   updatingTask.value = true
   const task = Object.assign(data, changes)
   const payload = {

@@ -4,8 +4,8 @@ import { db } from "./firebase"
 import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "firebase/auth";
 
 const auth = getAuth()
-const user = ref({})
-const currentUser = ref(null)
+export const user = ref({})
+const userProfile = ref(null)
 
 onAuthStateChanged(auth, (data) => {
   if (data) {
@@ -18,7 +18,6 @@ onAuthStateChanged(auth, (data) => {
     // ...
     user.value = null
   }
-  console.log(currentUser.value)
 })
 
 export const createUser = async (email, password) => {
@@ -28,7 +27,7 @@ export const createUser = async (email, password) => {
       email,
       password
     )
-    currentUser.value = result.user
+    user.value = result.user
   } catch (e) {
     throw e
   }
@@ -41,7 +40,7 @@ export const login = async (email, password) => {
       email,
       password
     )
-    currentUser.value = result.user
+    user.value = result.user
   } catch (e) {
     throw e
   }
@@ -55,7 +54,7 @@ export const useUser = () => {
   const userId = "Xjax1gr4MyY4nQyrubXN"
 
   const unsubUser = onSnapshot(
-    doc(db, "users", userId), (doc) => user.value = doc.data()
+    doc(db, "users", userId), (doc) => userProfile.value = doc.data()
   )
 
   const setActiveProjectId = async (activeProjectId) => await updateDoc(
@@ -66,8 +65,7 @@ export const useUser = () => {
   )
 
   return {
-    user,
-    currentUser,
+    userProfile,
     unsubUser,
     setActiveProjectId,
     logout
