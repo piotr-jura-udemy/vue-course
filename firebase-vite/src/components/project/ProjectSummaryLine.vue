@@ -16,11 +16,9 @@
 </template>
 
 <script setup>
-import { computed } from "vue"
-import { useStore } from "vuex"
+import { computed, inject } from "vue"
 
-const store = useStore()
-const tasks = computed(() => store.state.project.tasks)
+const tasks = inject("tasks")
 const total = computed(() => tasks.value.length)
 const completion = computed(
   () => total.value ? Math.ceil(

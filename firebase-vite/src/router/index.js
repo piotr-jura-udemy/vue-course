@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router"
+import { user } from "../firebase/user"
 
 const routes = [
   {

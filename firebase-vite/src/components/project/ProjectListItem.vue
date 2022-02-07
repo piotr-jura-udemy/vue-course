@@ -1,34 +1,19 @@
 <template>
   <button
-    @click="activateProject(project.id)"
+    @click="setActiveProjectId(project.id)"
     class="w-full rounded-md py-2 px-2 text-gray-500 font-semibold flex justify-between text-left items-center cursor-pointer"
     :class="{ 'bg-gray-200': isActive }"
   >
     <div class>{{ project.name }}</div>
-    <div
-      class="rounded-lg bg-gray-300 text-gray-800 px-2 font-normal w-8 text-center"
-    >{{ project.notDoneCount }}</div>
+    <div class="rounded-lg bg-gray-300 text-gray-800 px-2 font-normal w-8 text-center">{{ notDone }}</div>
   </button>
 </template>
 
 <script setup>
 import { computed } from "vue";
-import { useStore } from "vuex";
-import { SET_ACTIVE_PROJECT } from "../../store/mutation-types";
-import { useUser } from "./../../firebase/user"
+import { setActiveProjectId } from "./../../firebase/user"
 
-const { setActiveProjectId } = useUser()
-
-const props = defineProps({ project: Object })
-const store = useStore()
-const activeProjectId = computed(
-  () => store.state.project.activeProjectId
-)
-const isActive = computed(
-  () => activeProjectId.value === props.project.id
-)
-const activateProject = (projectId) => {
-  setActiveProjectId(projectId)
-  store.commit(`project/${SET_ACTIVE_PROJECT}`, projectId)
-}
+const props = defineProps({ project: Object, activeId: String })
+const isActive = computed(() => props.activeId === props.project.id)
+const notDone = computed(() => props.project.taskCount - props.project.taskDoneCount)
 </script>

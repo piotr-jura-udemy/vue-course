@@ -1,6 +1,6 @@
 import { db } from "./firebase"
 import { collection, addDoc, onSnapshot, query, runTransaction, doc, where } from "firebase/firestore"
-import { ref } from "vue"
+import { ref, watch, onUnmounted } from "vue"
 import { user } from "./user"
 
 export const addProject = async (name = "") => {
@@ -143,42 +143,51 @@ export const moveTask = async ({ fromProjectId, toProjectId, taskId }) => {
   })
 }
 
-export const useListProjects = (uid) => {
-  const projectList = ref([])
 
-  const queryProjectList = (uid) => {
-    const q = query(collection(db, "projects"), where("uid", "==", uid))
-    return onSnapshot(q, (querySnapshot) => {
-      projectList.value = querySnapshot.docs.map(
+export const useQueryProjects = () => {
+  const projects = ref([])
+  let unsub = () => { }
+
+  watch(user, (user) => {
+    if (!user || !user.uid) {
+      return
+    }
+
+    const q = query(collection(db, "projects"), where("uid", "==", user.uid))
+    unsub = onSnapshot(q, (querySnapshot) => {
+      projects.value = querySnapshot.docs.map(
         doc => ({
           id: doc.id,
           ...doc.data()
         })
       )
     })
-  }
+  }, { immediate: true })
 
-  return {
-    projectList,
-    queryProjectList
-  }
+  onUnmounted(unsub)
+
+  return projects
 }
 
-export const useProjectTasks = (projectId) => {
+
+export const useQueryTasks = (projectId) => {
   const taskList = ref([])
-  const q = query(collection(db, "projects", projectId, "tasks"))
+  let unsub = () => { }
 
-  const unsubProjectTasks = onSnapshot(q, (querySnapshot) => {
-    taskList.value = querySnapshot.docs.map(
-      doc => ({
-        id: doc.id,
-        ...doc.data()
-      })
-    )
+  watch(projectId, (projectId) => {
+    if (!projectId) { return }
+
+    const q = query(collection(db, "projects", projectId, "tasks"))
+    onSnapshot(q, (querySnapshot) => {
+      taskList.value = querySnapshot.docs.map(
+        doc => ({
+          id: doc.id,
+          ...doc.data()
+        })
+      )
+    })
   })
+  onUnmounted(unsub)
 
-  return {
-    taskList,
-    unsubProjectTasks
-  }
+  return taskList
 }

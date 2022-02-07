@@ -19,47 +19,22 @@
 </template>
 
 <script setup>
-import { watch, computed, onBeforeUnmount, ref } from "vue"
-import { useStore } from "vuex"
-import { useProjectTasks, updateTask } from "./../../firebase/project"
+import { computed, ref, toRef, inject } from "vue"
+import { updateTask } from "./../../firebase/project"
 import TodoListItem from "./TodoListItem.vue"
-import {
-  SET_TASKS
-} from "./../../store/mutation-types"
 
 const props = defineProps({
+  tasks: Array,
   onlyPending: Boolean,
   projectId: String
 })
-const store = useStore()
 
-const tasks = computed(() => store.state.project.tasks)
-const activeProjectId = computed(() => props.projectId)
-let beforeUnmountHandler = () => { }
-
-onBeforeUnmount(() => {
-  beforeUnmountHandler()
-  console.log(`Emptying task list!`)
-  store.commit(`project/${SET_TASKS}`, [])
-})
-
+// Make the projectId from props a ref.
+// Otherwise, this would just read the value once
+const activeProjectId = toRef(props, "projectId")
 const loadingTasks = ref(false)
-
-watch(activeProjectId, (projectId, oldProjectId) => {
-  if (projectId === oldProjectId || projectId === undefined) {
-    return
-  }
-
-  loadingTasks.value = true
-
-  const { taskList, unsubProjectTasks } = useProjectTasks(projectId)
-  beforeUnmountHandler = unsubProjectTasks
-
-  watch(taskList, (tasks) => {
-    store.commit(`project/${SET_TASKS}`, tasks)
-    loadingTasks.value = false
-  })
-})
+const updatingTask = ref(false)
+const tasks = inject("tasks")
 
 const displayedTasks = computed(() =>
   [...tasks.value]
@@ -67,9 +42,6 @@ const displayedTasks = computed(() =>
     .sort((a, b) => Number(b.priority) - Number(a.priority))
     .filter((task) => !props.onlyPending || !task.done)
 )
-
-import { UPDATE_TASK } from "./../../store/mutation-types"
-const updatingTask = ref(false)
 
 const taskUpdated = async (data, changes) => {
   if (updatingTask.value) { return }
@@ -81,7 +53,6 @@ const taskUpdated = async (data, changes) => {
     task
   }
   await updateTask(payload)
-  store.commit(`project/${UPDATE_TASK}`, payload)
   updatingTask.value = false
 }
 </script>

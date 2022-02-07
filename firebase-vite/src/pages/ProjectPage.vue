@@ -13,14 +13,14 @@
           <b>Only pending tasks</b>
         </BaseCheckbox>
       </div>
-      <TodoList :project-id="activeProjectId" :only-pending="onlyPending"></TodoList>
-      <SummaryLine class="mt-8" />
+      <TodoList :project-id="activeProjectId" :only-pending="onlyPending" :tasks="tasks"></TodoList>
+      <SummaryLine class="mt-8 mb-8" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, watch, onBeforeUnmount } from "vue"
+import { computed, provide } from "vue"
 import { useStore } from "vuex"
 
 import BaseCheckbox from "../components/base/BaseCheckbox.vue"
@@ -32,60 +32,25 @@ import UserProfile from "../components/user/UserProfile.vue"
 import ProjectAdd from "./../components/project/ProjectAdd.vue"
 
 import {
-  SET_ONLY_PENDING,
-  SET_PROJECTS,
-  SET_ACTIVE_PROJECT
+  SET_ONLY_PENDING
 } from "../store/mutation-types"
-import { useListProjects, addTask } from "../firebase/project"
-import { useUser, user } from "../firebase/user"
+import { useQueryProjects, useQueryTasks, addTask } from "../firebase/project"
+import { useQueryUserProfile } from "../firebase/user"
 
 const store = useStore()
-let unsubProjectList = null
-let unsubUserProfile = null
+const projects = useQueryProjects()
+const userProfile = useQueryUserProfile()
+const activeProjectId = computed(() => userProfile.value.activeProjectId)
+const tasks = useQueryTasks(activeProjectId)
 
-const { projectList, queryProjectList } = useListProjects()
-const { userProfile, queryUserProfile } = useUser()
+provide("tasks", tasks)
 
-// If the user is authenticated, start watching his profile & project list
-watch(user, (user) => {
-  if (!user?.uid) {
-    return
-  }
-
-  // Make sure to unsubscribe from the snapshot queries
-  unsubProjectList = queryProjectList(user.uid)
-  unsubUserProfile = queryUserProfile(user.uid)
-}, { immediate: true })
-
-watch(projectList, (newValue) => {
-  console.log('Got project list!')
-  store.commit(`project/${SET_PROJECTS}`, newValue)
-})
-
-watch(userProfile, (newUser, oldUser) => {
-  if (newUser && newUser?.activeProjectId !== oldUser?.activeProjectId) {
-    store.commit(`project/${SET_ACTIVE_PROJECT}`, newUser?.activeProjectId)
-  }
-})
-
-onBeforeUnmount(() => {
-  store.commit(`project/${SET_PROJECTS}`, [])
-
-  if (unsubProjectList) {
-    unsubProjectList()
-  }
-
-  if (unsubUserProfile) {
-    unsubUserProfile()
-  }
-})
-
-const activeProjectId = computed(() => store.state.project.activeProjectId)
-const projects = computed(() => store.getters[`project/projectsWithStats`])
 const onlyPending = computed({
   get: () => store.state.application.onlyPending,
   set: (newValue) => store.commit(`application/${SET_ONLY_PENDING}`, newValue),
 })
+
+provide("projects", projects)
 
 const taskAdded = async (description) => {
   await addTask(activeProjectId.value, {
