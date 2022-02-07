@@ -39,6 +39,8 @@ let beforeUnmountHandler = () => { }
 
 onBeforeUnmount(() => {
   beforeUnmountHandler()
+  console.log(`Emptying task list!`)
+  store.commit(`project/${SET_TASKS}`, [])
 })
 
 const loadingTasks = ref(false)

@@ -1,6 +1,7 @@
 import { db } from "./firebase"
-import { collection, addDoc, onSnapshot, query, runTransaction, doc } from "firebase/firestore"
+import { collection, addDoc, onSnapshot, query, runTransaction, doc, where } from "firebase/firestore"
 import { ref } from "vue"
+import { user } from "./user"
 
 export const addProject = async (name = "") => {
   const project = await addDoc(
@@ -8,7 +9,8 @@ export const addProject = async (name = "") => {
     {
       name,
       taskCount: 1,
-      taskDoneCount: 0
+      taskDoneCount: 0,
+      uid: user.value.uid
     }
   )
 
@@ -38,11 +40,6 @@ export const addTask = async (projectId, task) => {
     transaction.set(taskDocRef, task)
     transaction.update(projectDocRef, { taskCount })
   })
-
-  // return {
-  //   id: taskDocRef?.id,
-  //   ...task
-  // }
 }
 
 export const updateTask = async ({ projectId, task }) => {
@@ -146,22 +143,24 @@ export const moveTask = async ({ fromProjectId, toProjectId, taskId }) => {
   })
 }
 
-export const useListProjects = () => {
+export const useListProjects = (uid) => {
   const projectList = ref([])
-  const q = query(collection(db, "projects"))
 
-  const unsubProjectList = onSnapshot(q, (querySnapshot) => {
-    projectList.value = querySnapshot.docs.map(
-      doc => ({
-        id: doc.id,
-        ...doc.data()
-      })
-    )
-  })
+  const queryProjectList = (uid) => {
+    const q = query(collection(db, "projects"), where("uid", "==", uid))
+    return onSnapshot(q, (querySnapshot) => {
+      projectList.value = querySnapshot.docs.map(
+        doc => ({
+          id: doc.id,
+          ...doc.data()
+        })
+      )
+    })
+  }
 
   return {
     projectList,
-    unsubProjectList
+    queryProjectList
   }
 }
 
