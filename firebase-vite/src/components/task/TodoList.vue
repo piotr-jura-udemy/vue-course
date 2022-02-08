@@ -1,5 +1,8 @@
 <template>
-  <div class="grid grid-cols-1 gap-4 lg:grid-cols-3" v-if="!loadingTasks && displayedTasks.length">
+  <div
+    class="grid grid-cols-1 gap-4 lg:grid-cols-3"
+    v-if="activeProjectId && displayedTasks.length"
+  >
     <TodoListItem
       v-for="task in displayedTasks"
       :task="task"
@@ -11,9 +14,9 @@
       @update:priority="taskUpdated(task, { priority: $event })"
     />
   </div>
-  <div v-if="loadingTasks" class="text-xl text-gray-400 px-1">Loading...</div>
+  <div v-if="!activeProjectId" class="text-xl text-gray-400 px-1">No active project</div>
   <div
-    v-if="!loadingTasks && 0 === displayedTasks.length"
+    v-if="activeProjectId && 0 === displayedTasks.length"
     class="text-xl text-gray-400 px-1"
   >No tasks left!</div>
 </template>

@@ -1,12 +1,13 @@
 <template>
   <div class="flex flex-col md:flex-row">
-    <div class="w-full md:w-1/3 xl:w-1/5 mr-4 px-0 md:px-4 mb-4 h-full text-xl md:text-base">
+    <div class="w-full md:w-1/3 mr-4 px-0 md:px-4 mb-4 h-full text-xl md:text-base">
       <UserProfile />
       <ProjectAdd />
       <ProjectList :projects="projects" v-if="projects.length" />
-      <div v-else class="text-xl text-gray-400">No projects yet</div>
+      <div v-else class="p-2 text-xl text-gray-400">No projects yet</div>
     </div>
-    <div class="w-full md:w-2/3 xl:w-4/5">
+
+    <div class="w-full md:w-2/3">
       <div class="mb-4">
         <AddTaskInput @added="taskAdded" />
         <BaseCheckbox class="my-4 py-4 px-1 text-gray-600 font-weight-100" v-model="onlyPending">
@@ -20,7 +21,7 @@
 </template>
 
 <script setup>
-import { computed, provide } from "vue"
+import { computed, provide, watch } from "vue"
 import { useStore } from "vuex"
 
 import BaseCheckbox from "../components/base/BaseCheckbox.vue"
@@ -42,7 +43,6 @@ const projects = useQueryProjects()
 const userProfile = useQueryUserProfile()
 const activeProjectId = computed(() => userProfile.value.activeProjectId)
 const tasks = useQueryTasks(activeProjectId)
-
 provide("tasks", tasks)
 
 const onlyPending = computed({

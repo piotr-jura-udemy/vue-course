@@ -24,6 +24,20 @@ export const addProject = async (name = "") => {
   )
 }
 
+export const deleteProject = async (projectId) => {
+  await runTransaction(db, async (transaction) => {
+    const projectDocRef = doc(db, "projects", projectId)
+    // Delete the project doc
+    // BEWARE: This does not remove the tasks subcollection!
+    // To delete the subcollection of tasks, each document inside the subcollection
+    // needs to be fetched, and deleted individually
+    // It's NOT RECOMMENDED to do that in a Web client like ours here
+    // The RECOMMENDED method is to write it server-side, in case of Firebase
+    // this could be a Firebase Function
+    transaction.delete(projectDocRef)
+  })
+}
+
 export const addTask = async (projectId, task) => {
   await runTransaction(db, async (transaction) => {
     const projectDocRef = doc(db, "projects", projectId)
@@ -143,7 +157,6 @@ export const moveTask = async ({ fromProjectId, toProjectId, taskId }) => {
   })
 }
 
-
 export const useQueryProjects = () => {
   const projects = ref([])
   let unsub = () => { }
@@ -169,13 +182,15 @@ export const useQueryProjects = () => {
   return projects
 }
 
-
 export const useQueryTasks = (projectId) => {
   const taskList = ref([])
   let unsub = () => { }
 
   watch(projectId, (projectId) => {
-    if (!projectId) { return }
+    if (null === projectId || undefined === projectId) {
+      taskList.value = []
+      return
+    }
 
     const q = query(collection(db, "projects", projectId, "tasks"))
     onSnapshot(q, (querySnapshot) => {
