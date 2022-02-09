@@ -1,6 +1,6 @@
 import { onSnapshot, setDoc, updateDoc, doc } from "firebase/firestore"
 import { ref, watch, onUnmounted } from "vue"
-import { db } from "./firebase"
+import { db } from "@/firebase/firebase"
 import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "firebase/auth";
 
 const auth = getAuth()
@@ -52,10 +52,7 @@ export const logout = async () => {
 }
 
 export const setActiveProjectId = async (activeProjectId) => await updateDoc(
-  doc(db, "users", user.value.uid),
-  {
-    activeProjectId
-  }
+  doc(db, "users", user.value.uid), { activeProjectId }
 )
 
 export const useQueryUserProfile = () => {

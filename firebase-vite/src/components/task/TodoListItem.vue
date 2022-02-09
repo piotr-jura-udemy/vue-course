@@ -6,11 +6,12 @@
     <div class="p-4 border-b border-gray-100 text-xl md:text-base">{{ task.description }}</div>
     <div class="p-4 bg-white flex-grow">
       <BaseCheckbox
-        class="mb-2"
+        class="mb-2 text-xl md:text-base"
         @update:model-value="$emit('update:done', $event)"
         :model-value="done"
       >Done</BaseCheckbox>
       <BaseCheckbox
+        class="text-xl md:text-base"
         @update:model-value="$emit('update:priority', $event)"
         :model-value="priority"
       >Prioritized</BaseCheckbox>
@@ -21,8 +22,8 @@
 
 <script setup>
 import { provide } from "vue"
-import BaseCheckbox from "../base/BaseCheckbox.vue"
-import TodoListItemMenu from "./TodoListItemMenu.vue"
+import BaseCheckbox from "@/components/base/BaseCheckbox.vue"
+import TodoListItemMenu from "@/components/task/TodoListItemMenu.vue"
 
 const props = defineProps({
   task: {

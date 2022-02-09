@@ -1,21 +1,20 @@
 import { createRouter, createWebHashHistory } from "vue-router"
-import { user } from "../firebase/user"
 
 const routes = [
   {
     path: "/",
     name: "project",
-    component: () => import("./../pages/ProjectPage.vue"),
+    component: () => import("@/pages/ProjectPage.vue"),
   },
   {
     path: "/signup",
     name: "signup",
-    component: () => import("./../pages/SignupPage.vue"),
+    component: () => import("@/pages/SignupPage.vue"),
   },
   {
     path: "/login",
     name: "login",
-    component: () => import("./../pages/LoginPage.vue"),
+    component: () => import("@/pages/LoginPage.vue"),
   },
 ]
 

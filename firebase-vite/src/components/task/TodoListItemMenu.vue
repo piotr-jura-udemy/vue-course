@@ -11,9 +11,9 @@
 
 <script setup>
 import { ref, inject } from "vue"
-import BaseTextButton from "./../base/BaseTextButton.vue"
-import TodoListItemMenuMove from "./TodoListItemMenuMove.vue"
-import { deleteTask } from "./../../firebase/project"
+import BaseTextButton from "@/components/base/BaseTextButton.vue"
+import TodoListItemMenuMove from "@/components/task/TodoListItemMenuMove.vue"
+import { deleteTask } from "@/firebase/project"
 
 const task = inject("task")
 const projectId = inject("projectId")

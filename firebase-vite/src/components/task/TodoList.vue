@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="grid grid-cols-1 gap-4 lg:grid-cols-3"
-    v-if="activeProjectId && displayedTasks.length"
-  >
+  <div class="grid grid-cols-1 gap-4 lg:grid-cols-3" v-if="activeProjectId && tasksLeft">
     <TodoListItem
       v-for="task in displayedTasks"
       :task="task"
@@ -14,17 +11,14 @@
       @update:priority="taskUpdated(task, { priority: $event })"
     />
   </div>
-  <div v-if="!activeProjectId" class="text-xl text-gray-400 px-1">No active project</div>
-  <div
-    v-if="activeProjectId && 0 === displayedTasks.length"
-    class="text-xl text-gray-400 px-1"
-  >No tasks left!</div>
+  <div v-if="!activeProjectId && !tasksLeft" class="text-xl text-gray-400 px-1">No active project</div>
+  <div v-if="activeProjectId && !tasksLeft" class="text-xl text-gray-400 px-1">No tasks left!</div>
 </template>
 
 <script setup>
 import { computed, ref, toRef, inject } from "vue"
-import { updateTask } from "./../../firebase/project"
-import TodoListItem from "./TodoListItem.vue"
+import { updateTask } from "@/firebase/project"
+import TodoListItem from "@/components/task/TodoListItem.vue"
 
 const props = defineProps({
   tasks: Array,
@@ -35,16 +29,15 @@ const props = defineProps({
 // Make the projectId from props a ref.
 // Otherwise, this would just read the value once
 const activeProjectId = toRef(props, "projectId")
-const loadingTasks = ref(false)
 const updatingTask = ref(false)
 const tasks = inject("tasks")
-
 const displayedTasks = computed(() =>
   [...tasks.value]
     .filter(t => t)
     .sort((a, b) => Number(b.priority) - Number(a.priority))
     .filter((task) => !props.onlyPending || !task.done)
 )
+const tasksLeft = computed(() => displayedTasks.value.length)
 
 const taskUpdated = async (data, changes) => {
   if (updatingTask.value) { return }

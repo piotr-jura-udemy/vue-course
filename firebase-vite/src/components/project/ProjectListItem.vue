@@ -19,8 +19,8 @@
 
 <script setup>
 import { computed } from "vue";
-import { setActiveProjectId } from "./../../firebase/user"
-import { deleteProject } from "./../../firebase/project"
+import { setActiveProjectId } from "@/firebase/user"
+import { deleteProject } from "@/firebase/project"
 
 const props = defineProps({ project: Object, activeId: String })
 const isActive = computed(() => props.activeId === props.project.id)

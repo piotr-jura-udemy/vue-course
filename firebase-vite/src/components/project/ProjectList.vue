@@ -8,8 +8,8 @@
 </template>
 
 <script setup>
-import ProjectListItem from "./ProjectListItem.vue"
-import { useQueryUserProfile } from "./../../firebase/user"
+import ProjectListItem from "@/components/project/ProjectListItem.vue"
+import { useQueryUserProfile } from "@/firebase/user"
 
 defineProps({
   projects: Array,

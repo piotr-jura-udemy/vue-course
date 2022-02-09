@@ -11,7 +11,6 @@
   <div v-if="showMenu" class="mb-2">
     <input
       ref="project"
-      :disabled="inProgress"
       type="text"
       placeholder="Enter project and hit enter"
       @keyup.enter="projectAdded"
@@ -24,20 +23,20 @@
 
 <script setup>
 import { ref, watch } from "vue"
-import { addProject } from "./../../firebase/project"
+import { addProject } from "@/firebase/project"
+import { setActiveProjectId } from "@/firebase/user"
 
 const showMenu = ref(false)
 const projectName = ref("")
-const inProgress = ref(false)
 const project = ref(null)
 
 watch(showMenu, () => setTimeout(() => project?.value?.focus(), 100))
 
 const projectAdded = async () => {
-  inProgress.value = true
-  await addProject(projectName.value)
+  const id = await addProject(projectName.value)
+  console.log(id)
+  await setActiveProjectId(id)
   projectName.value = ""
   showMenu.value = false
-  inProgress.value = false
 }
 </script>

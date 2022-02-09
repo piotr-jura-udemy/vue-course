@@ -1,7 +1,7 @@
-import { db } from "./firebase"
-import { collection, addDoc, onSnapshot, query, runTransaction, doc, where } from "firebase/firestore"
+import { db } from "@/firebase/firebase"
+import { collection, addDoc, onSnapshot, query, runTransaction, doc, where, serverTimestamp, orderBy } from "firebase/firestore"
 import { ref, watch, onUnmounted } from "vue"
-import { user } from "./user"
+import { user } from "@/firebase/user"
 
 export const addProject = async (name = "") => {
   const project = await addDoc(
@@ -19,9 +19,12 @@ export const addProject = async (name = "") => {
     {
       description: "First task",
       done: false,
-      priority: false
+      priority: false,
+      timestamp: serverTimestamp()
     }
   )
+
+  return project.id
 }
 
 export const deleteProject = async (projectId) => {
@@ -51,7 +54,10 @@ export const addTask = async (projectId, task) => {
     // This generates the new unique ID for the new document
     const taskDocRef = doc(collection(db, "projects", projectId, "tasks"))
 
-    transaction.set(taskDocRef, task)
+    transaction.set(taskDocRef, {
+      ...task,
+      timestamp: serverTimestamp()
+    })
     transaction.update(projectDocRef, { taskCount })
   })
 }
@@ -192,7 +198,10 @@ export const useQueryTasks = (projectId) => {
       return
     }
 
-    const q = query(collection(db, "projects", projectId, "tasks"))
+    const q = query(
+      collection(db, "projects", projectId, "tasks"),
+      orderBy("timestamp", "desc")
+    )
     onSnapshot(q, (querySnapshot) => {
       taskList.value = querySnapshot.docs.map(
         doc => ({

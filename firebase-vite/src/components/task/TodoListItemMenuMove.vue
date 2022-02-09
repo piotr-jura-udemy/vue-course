@@ -17,9 +17,9 @@
 
 <script setup>
 import { computed, inject } from "vue"
-import BaseTextButton from "../base/BaseTextButton.vue"
-import BaseSmallListButton from "./../base/BaseSmallListButton.vue"
-import { moveTask } from "./../../firebase/project"
+import BaseTextButton from "@/components/base/BaseTextButton.vue"
+import BaseSmallListButton from "@/components/base/BaseSmallListButton.vue"
+import { moveTask } from "@/firebase/project"
 
 const task = inject("task")
 const projectId = inject("projectId")

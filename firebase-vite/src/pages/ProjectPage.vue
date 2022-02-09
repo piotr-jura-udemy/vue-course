@@ -8,35 +8,35 @@
     </div>
 
     <div class="w-full md:w-2/3">
-      <div class="mb-4">
+      <div class="mb-4" v-if="activeProjectId">
         <AddTaskInput @added="taskAdded" />
         <BaseCheckbox class="my-4 py-4 px-1 text-gray-600 font-weight-100" v-model="onlyPending">
           <b>Only pending tasks</b>
         </BaseCheckbox>
       </div>
       <TodoList :project-id="activeProjectId" :only-pending="onlyPending" :tasks="tasks"></TodoList>
-      <SummaryLine class="mt-8 mb-8" />
+      <SummaryLine class="mt-8 mb-8" v-if="activeProjectId" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, provide, watch } from "vue"
+import { computed, provide } from "vue"
 import { useStore } from "vuex"
 
-import BaseCheckbox from "../components/base/BaseCheckbox.vue"
-import AddTaskInput from "../components/task/AddTaskInput.vue"
-import SummaryLine from "../components/project/ProjectSummaryLine.vue"
-import ProjectList from "../components/project/ProjectList.vue"
-import TodoList from "../components/task/TodoList.vue"
-import UserProfile from "../components/user/UserProfile.vue"
-import ProjectAdd from "./../components/project/ProjectAdd.vue"
+import BaseCheckbox from "@/components/base/BaseCheckbox.vue"
+import AddTaskInput from "@/components/task/AddTaskInput.vue"
+import SummaryLine from "@/components/project/ProjectSummaryLine.vue"
+import ProjectList from "@/components/project/ProjectList.vue"
+import TodoList from "@/components/task/TodoList.vue"
+import UserProfile from "@/components/user/UserProfile.vue"
+import ProjectAdd from "@/components/project/ProjectAdd.vue"
 
 import {
   SET_ONLY_PENDING
-} from "../store/mutation-types"
-import { useQueryProjects, useQueryTasks, addTask } from "../firebase/project"
-import { useQueryUserProfile } from "../firebase/user"
+} from "@/store/mutation-types"
+import { useQueryProjects, useQueryTasks, addTask } from "@/firebase/project"
+import { useQueryUserProfile } from "@/firebase/user"
 
 const store = useStore()
 const projects = useQueryProjects()

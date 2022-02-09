@@ -45,26 +45,16 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "vue"
 import { useRouter, RouterLink } from 'vue-router'
-import { createUser } from "./../firebase/user"
+import { createUser } from "@/firebase/user"
+import { useCredentials } from "@/composables/useCredentials"
 
-const credentials = reactive({
-  email: "",
-  password: ""
-})
-const error = ref(null)
+const { credentials, error, perform } = useCredentials()
 const router = useRouter()
-
-const signup = async () => {
-  try {
-    error.value = null
-    await createUser(
-      credentials.email, credentials.password
-    )
-    router.push({ name: 'project' })
-  } catch (e) {
-    error.value = e.message
-  }
-}
+const signup = perform(async () => {
+  await createUser(
+    credentials.email, credentials.password
+  )
+  router.push({ name: 'project' })
+})
 </script>

@@ -12,7 +12,7 @@
 
 <script setup>
 import { useRouter } from "vue-router"
-import { user, logout } from "../../firebase/user"
+import { user, logout } from "@/firebase/user"
 
 const router = useRouter()
 const doLogout = async () => {
