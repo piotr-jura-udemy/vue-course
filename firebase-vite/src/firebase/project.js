@@ -73,6 +73,11 @@ export const updateTask = async ({ projectId, task }) => {
 
     const taskDocRef = doc(db, "projects", projectId, "tasks", task.id)
     const taskDoc = await transaction.get(taskDocRef)
+
+    if (!taskDoc.exists()) {
+      throw `Task ${task.id} does not exist`
+    }
+
     let taskDoneCount = projectDoc.data().taskDoneCount
 
     // Task is done, previously was not
@@ -82,6 +87,9 @@ export const updateTask = async ({ projectId, task }) => {
     } else if (!task.done && taskDoc.data().done) {
       taskDoneCount--
     }
+
+    // Make sure ID is not stored as document property!
+    delete task.id
 
     transaction.update(taskDocRef, task)
     transaction.update(projectDocRef, { taskDoneCount })

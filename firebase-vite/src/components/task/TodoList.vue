@@ -11,7 +11,10 @@
       @update:priority="taskUpdated(task, { priority: $event })"
     />
   </div>
-  <div v-if="!activeProjectId && !tasksLeft" class="text-xl text-gray-400 px-1">No active project</div>
+  <div
+    v-if="!activeProjectId && !tasksLeft"
+    class="text-xl text-gray-400 px-2 md:px-1"
+  >No active project</div>
   <div v-if="activeProjectId && !tasksLeft" class="text-xl text-gray-400 px-1">No tasks left!</div>
 </template>
 

@@ -16,13 +16,13 @@
       @keyup.enter="projectAdded"
       @keyup.esc="showMenu = false"
       v-model="projectName"
-      class="block w-full rounded-md shadow-sm text-lg p-4"
+      class="block w-full rounded-md shadow-sm text-lg p-2"
     />
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from "vue"
+import { ref, onUpdated } from "vue"
 import { addProject } from "@/firebase/project"
 import { setActiveProjectId } from "@/firebase/user"
 
@@ -30,13 +30,12 @@ const showMenu = ref(false)
 const projectName = ref("")
 const project = ref(null)
 
-watch(showMenu, () => setTimeout(() => project?.value?.focus(), 100))
+onUpdated(() => project?.value?.focus())
 
 const projectAdded = async () => {
-  const id = await addProject(projectName.value)
-  console.log(id)
-  await setActiveProjectId(id)
-  projectName.value = ""
   showMenu.value = false
+  const id = await addProject(projectName.value)
+  projectName.value = ""
+  await setActiveProjectId(id)
 }
 </script>
