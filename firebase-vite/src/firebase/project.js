@@ -180,6 +180,7 @@ export const useQueryProjects = () => {
       return
     }
 
+    unsub()
     const q = query(collection(db, "projects"), where("uid", "==", user.uid))
     unsub = onSnapshot(q, (querySnapshot) => {
       projects.value = querySnapshot.docs.map(
@@ -206,11 +207,12 @@ export const useQueryTasks = (projectId) => {
       return
     }
 
+    unsub()
     const q = query(
       collection(db, "projects", projectId, "tasks"),
       orderBy("timestamp", "desc")
     )
-    onSnapshot(q, (querySnapshot) => {
+    unsub = onSnapshot(q, (querySnapshot) => {
       taskList.value = querySnapshot.docs.map(
         doc => ({
           id: doc.id,
@@ -219,6 +221,7 @@ export const useQueryTasks = (projectId) => {
       )
     })
   })
+
   onUnmounted(unsub)
 
   return taskList

@@ -62,6 +62,7 @@ export const useQueryUserProfile = () => {
   watch(user, (user) => {
     if (!user || !user.uid) { return }
 
+    unsub()
     unsub = onSnapshot(
       doc(db, "users", user.uid), (doc) => {
         userProfile.value = doc.data()
