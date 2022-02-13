@@ -9,22 +9,14 @@
   />
 </template>
 
-<script>
-export default {
-  emits: ["added"],
-  data() {
-    return {
-      task: "",
-    };
-  },
-  methods: {
-    add() {
-      this.$emit("added", this.task);
-      this.task = "";
-    },
-  },
-  mounted() {
-    this.$refs.input.focus();
-  },
+<script setup>
+import { defineEmits, ref, onMounted } from "vue";
+const emit = defineEmits(["added"]);
+const task = ref("");
+const add = () => {
+  emit("added", task.value);
+  task.value = "";
 };
+const input = ref(null);
+onMounted(() => input.value.focus());
 </script>
