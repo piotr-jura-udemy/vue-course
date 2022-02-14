@@ -27,7 +27,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 let nextTaskId = 100;
 
 import BaseCheckbox from "./components/base/BaseCheckbox.vue";
@@ -41,86 +41,46 @@ import {
   UPDATE_TASK,
   SET_ONLY_PENDING,
 } from "./store/mutation-types";
+import { useStore } from "vuex";
+import { computed } from "vue";
 
-import { mapGetters, mapState, mapMutations } from "vuex";
+const store = useStore();
+const activeProjectId = computed(
+  () => store.state.project.activeProjectId
+);
+const projects = computed(
+  () => store.getters[`project/projectsWithStats`]
+);
+const tasks = computed(
+  () => store.getters[`project/activeProjectTasks`]
+);
 
-export default {
-  name: "App",
-  components: {
-    BaseCheckbox,
-    AddTaskInput,
-    TodoListItem,
-    SummaryLine,
-    ProjectList,
-  },
-  data() {
-    return {};
-  },
-  // computed: mapState([]),
-  computed: {
-    ...mapState({
-      activeProjectId: (state) => state.project.activeProjectId
-    }),
-    ...mapGetters('project', {
-      projects: "projectsWithStats",
-      // activeProject: "activeProject",
-      tasks: "activeProjectTasks",
-    }),
-    // ...mapState({ activeId: "activeProjectId" }),
-    // ...mapState({
-    // activeId: (state) => state.activeProjectId ?? 1,
-    // activeId(state) {
-    //   this.projects
-    // }
-    // }),
-    // projects() {
-    //   return this.$store.getters.projectsWithStats;
-    // },
-    // tasks() {
-    //   // return this.$store.state.tasks;
-    //   return this.activeProject?.tasks ?? [];
-    // },
-    displayedTasks() {
-      return [...this.tasks]
-        .sort((a, b) => Number(b.priority) - Number(a.priority))
-        .filter((task) => !this.onlyPending || !task.done);
-    },
-    onlyPending: {
-      get() {
-        return this.$store.state.application.onlyPending;
+const onlyPending = computed({
+  get: () => store.state.application.onlyPending,
+  set: (newValue) => store.commit(`application/${SET_ONLY_PENDING}`, newValue)
+});
+const displayedTasks = computed(
+  () => [...tasks.value]
+    .sort((a, b) => Number(b.priority) - Number(a.priority))
+    .filter((task) => !onlyPending.value || !task.done)
+);
+
+const taskAdded = (description) =>
+  store.commit(
+    `project/${ADD_TASK}`,
+    {
+      projectId: activeProjectId.value,
+      task: {
+        id: nextTaskId++,
+        description,
+        done: false,
+        priority: false,
       },
-      set(newValue) {
-        this[SET_ONLY_PENDING](newValue);
-        // this.$store.commit(`application/${SET_ONLY_PENDING}`, newValue);
-      },
-    },
-  },
-  methods: {
-    ...mapMutations(
-      'application',
-      [SET_ONLY_PENDING]
-    ),
-    ...mapMutations(
-      'project',
-      [ADD_TASK, UPDATE_TASK]
-    ),
-    taskAdded(task) {
-      this[ADD_TASK]({
-        projectId: this.activeProjectId,
-        task: {
-          id: nextTaskId++,
-          description: task,
-          done: false,
-          priority: false,
-        },
-      });
-    },
-    taskUpdated(task, changes) {
-      this[UPDATE_TASK]({
-        projectId: this.activeProjectId,
-        task: Object.assign(task, changes),
-      });
-    },
-  },
-};
+    });
+const taskUpdated = (task, changes) => store.commit(
+  `project/${UPDATE_TASK}`,
+  {
+    projectId: activeProjectId.value,
+    task: Object.assign(task, changes),
+  });
 </script>

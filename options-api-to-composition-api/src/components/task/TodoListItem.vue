@@ -33,7 +33,7 @@ const props = defineProps({
   done: Boolean,
   priority: Boolean,
 });
-defineEmits("update:done", "update:priority");
+defineEmits(["update:done", "update:priority"]);
 provide("task", props.task);
 provide("projectId", props.projectId);
 </script>
