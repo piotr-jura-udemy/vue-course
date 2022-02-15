@@ -20,7 +20,6 @@ const props = defineProps({
     default: false,
   },
 });
-// const nonReactive = toRef(props, "modelValue");
 const emit = defineEmits(["update:modelValue"]);
 const onChange = () => emit("update:modelValue", !props.modelValue);
 </script>

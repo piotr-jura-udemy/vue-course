@@ -45,41 +45,32 @@ import { useStore } from "vuex";
 import { computed } from "vue";
 
 const store = useStore();
-const activeProjectId = computed(
-  () => store.state.project.activeProjectId
-);
-const projects = computed(
-  () => store.getters[`project/projectsWithStats`]
-);
-const tasks = computed(
-  () => store.getters[`project/activeProjectTasks`]
-);
+const activeProjectId = computed(() => store.state.project.activeProjectId);
+const projects = computed(() => store.getters[`project/projectsWithStats`]);
+const tasks = computed(() => store.getters[`project/activeProjectTasks`]);
 
 const onlyPending = computed({
   get: () => store.state.application.onlyPending,
-  set: (newValue) => store.commit(`application/${SET_ONLY_PENDING}`, newValue)
+  set: (newValue) => store.commit(`application/${SET_ONLY_PENDING}`, newValue),
 });
-const displayedTasks = computed(
-  () => [...tasks.value]
+const displayedTasks = computed(() =>
+  [...tasks.value]
     .sort((a, b) => Number(b.priority) - Number(a.priority))
     .filter((task) => !onlyPending.value || !task.done)
 );
 
 const taskAdded = (description) =>
-  store.commit(
-    `project/${ADD_TASK}`,
-    {
-      projectId: activeProjectId.value,
-      task: {
-        id: nextTaskId++,
-        description,
-        done: false,
-        priority: false,
-      },
-    });
-const taskUpdated = (task, changes) => store.commit(
-  `project/${UPDATE_TASK}`,
-  {
+  store.commit(`project/${ADD_TASK}`, {
+    projectId: activeProjectId.value,
+    task: {
+      id: nextTaskId++,
+      description,
+      done: false,
+      priority: false,
+    },
+  });
+const taskUpdated = (task, changes) =>
+  store.commit(`project/${UPDATE_TASK}`, {
     projectId: activeProjectId.value,
     task: Object.assign(task, changes),
   });

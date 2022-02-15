@@ -12,36 +12,26 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { defineEmits, computed, inject } from "vue";
+import { useStore } from "vuex";
 import BaseTextButton from "../base/BaseTextButton.vue";
 import BaseSmallListButton from "./../base/BaseSmallListButton.vue";
-import { mapState, mapActions } from "vuex";
 import { MOVE_TASK } from "./../../store/actions-types";
 
-export default {
-  components: {
-    BaseTextButton,
-    BaseSmallListButton,
-  },
-  inject: ["task", "projectId"],
-  emits: ["closed"],
-  methods: {
-    ...mapActions('project', [MOVE_TASK]),
-    taskMoved(toProjectId) {
-      this[MOVE_TASK]({
-        taskId: this.task.id,
-        fromProjectId: this.projectId,
-        toProjectId
-      });
-      this.$emit("closed");
-    }
-  },
-  computed: mapState({
-    projects(state) {
-      return state.project.projects.filter(
-        project => project.id !== this.projectId
-      );
-    }
-  })
+const task = inject("task");
+const projectId = inject("projectId");
+const emit = defineEmits(["closed"]);
+const store = useStore();
+const taskMoved = (toProjectId) => {
+  store.dispatch(`project/${MOVE_TASK}`, {
+    taskId: task.id,
+    fromProjectId: projectId,
+    toProjectId,
+  });
+  emit("closed");
 };
+const projects = computed(() =>
+  store.state.project.projects.filter((project) => project.id !== projectId)
+);
 </script>

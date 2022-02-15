@@ -11,22 +11,15 @@
   </div>
 </template>
 
-<script>
-import { mapState, mapMutations } from "vuex";
+<script setup>
+import { computed, defineProps } from "vue";
+import { useStore } from "vuex";
 import { SET_ACTIVE_PROJECT } from "../../store/mutation-types";
 
-export default {
-  props: { project: Object },
-  computed: {
-    ...mapState({
-      activeProjectId: (state) => state.project.activeProjectId
-    }),
-    isActive() {
-      return this.activeProjectId === this.project.id;
-    },
-  },
-  methods: mapMutations('project',
-    { activateProject: SET_ACTIVE_PROJECT }
-  ),
-};
+const props = defineProps({ project: Object });
+const store = useStore();
+const activeProjectId = computed(() => store.state.project.activeProjectId);
+const isActive = computed(() => activeProjectId.value === props.project.id);
+const activateProject = (projectId) =>
+  store.commit(`project/${SET_ACTIVE_PROJECT}`, projectId);
 </script>

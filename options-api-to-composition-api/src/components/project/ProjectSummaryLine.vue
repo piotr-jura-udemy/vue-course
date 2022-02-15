@@ -15,28 +15,19 @@
   </div>
 </template>
 
-<script>
-import { mapGetters } from "vuex";
+<script setup>
+import { computed } from "vue";
+import { useStore } from "vuex";
 
-export default {
-  computed: {
-    ...mapGetters('project', {
-      tasks: "activeProjectTasks",
-    }),
-    // tasks() {
-    //   return this.$store.getters.activeProject?.tasks ?? [];
-    // },
-    total() {
-      return this.tasks.length;
-    },
-    completion() {
-      return Math.ceil(
-        (this.tasks.filter((task) => task.done).length / this.total) * 100
-      );
-    },
-    prioritzed() {
-      return this.tasks.filter((task) => task.priority).length;
-    },
-  },
-};
+const store = useStore();
+const tasks = computed(() => store.getters[`project/activeProjectTasks`]);
+const total = computed(() => tasks.value.length);
+const completion = computed(() =>
+  Math.ceil(
+    (tasks.value.filter((task) => task.done).length / total.value) * 100
+  )
+);
+const prioritzed = computed(
+  () => tasks.value.filter((task) => task.priority).length
+);
 </script>

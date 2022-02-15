@@ -1,16 +1,12 @@
 <template>
-  <ProjectListItem
-    v-for="project in projects"
-    :project="project"
-    :key="project.id"
-  />
+  <ProjectListItem v-for="project in projects" :project="project" :key="project.id" />
 </template>
 
-<script>
+<script setup>
+import { defineProps } from "vue";
 import ProjectListItem from "./ProjectListItem.vue";
 
-export default {
-  components: { ProjectListItem },
-  props: { projects: Array },
-};
+defineProps({
+  projects: Array,
+});
 </script>

@@ -12,15 +12,20 @@
 <script setup>
 import BaseTextButton from "./../base/BaseTextButton.vue";
 import TodoListItemMenuMove from "./TodoListItemMenuMove.vue";
-// import { REMOVE_TASK } from "./../../store/mutation-types";
-// import { mapMutations } from "vuex";
+import { REMOVE_TASK } from "./../../store/mutation-types";
 import { ref, inject } from "vue";
+import { useStore } from "vuex";
 
 const showMenu = ref(false);
-const toggleMenu = () => showMenu.value = !showMenu.value;
+const toggleMenu = () => (showMenu.value = !showMenu.value);
 
 const task = inject("task");
 const projectId = inject("projectId");
 
-const taskRemoved = () => console.log(`The task ${task.id} was removed from the project ${projectId}`);
+const store = useStore();
+const taskRemoved = () =>
+  store.commit(`project/${REMOVE_TASK}`, {
+    taskId: task.value.id,
+    projectId: projectId.value,
+  });
 </script>

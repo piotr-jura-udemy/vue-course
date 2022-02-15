@@ -6,7 +6,7 @@ import project from "./modules/project";
 const store = createStore({
   modules: {
     project,
-    application
+    application,
   },
   state() {
     return {};

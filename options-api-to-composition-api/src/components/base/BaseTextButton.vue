@@ -8,9 +8,9 @@
   </button>
 </template>
 
-<script>
-export default {
-  props: { color: { type: String, default: "grey" } },
-  emits: ["click"],
-};
+<script setup>
+import { defineEmits, defineProps } from "vue";
+
+defineProps({ color: { type: String, default: "grey" } });
+defineEmits(["click"]);
 </script>

@@ -7,22 +7,16 @@ import {
 import { MOVE_TASK } from "./../actions-types";
 
 function getProjectById(state, id) {
-  return state.projects.find(
-    (project) => project.id === id
-  );
+  return state.projects.find((project) => project.id === id);
 }
 
-function getProjectAndTaskIndex(
-  state, { projectId, taskId }
-) {
+function getProjectAndTaskIndex(state, { projectId, taskId }) {
   const project = getProjectById(state, projectId);
 
   return {
     project,
-    taskIndex: project?.tasks?.findIndex(
-      (task) => task.id === taskId
-    )
-  }
+    taskIndex: project?.tasks?.findIndex((task) => task.id === taskId),
+  };
 }
 
 const state = () => ({
@@ -98,9 +92,7 @@ const getters = {
     return state.projects.map((project) => ({
       id: project.id,
       ...project,
-      notDoneCount: project.tasks.filter(
-        (task) => !task.done
-      ).length,
+      notDoneCount: project.tasks.filter((task) => !task.done).length,
     }));
   },
   activeProjectTasks(_, getters) {
@@ -120,23 +112,17 @@ const mutations = {
   }
   */
   [ADD_TASK](state, payload) {
-    getProjectById(
-      state, payload.projectId
-    )?.tasks.push(payload.task);
+    getProjectById(state, payload.projectId)?.tasks.push(payload.task);
   },
   [REMOVE_TASK](state, payload) {
-    const { project, taskIndex } = getProjectAndTaskIndex(
-      state, payload
-    );
+    const { project, taskIndex } = getProjectAndTaskIndex(state, payload);
 
     if (taskIndex !== undefined && taskIndex !== -1) {
       project.tasks.splice(taskIndex, 1);
     }
   },
   [UPDATE_TASK](state, payload) {
-    const { project, taskIndex } = getProjectAndTaskIndex(
-      state, payload
-    );
+    const { project, taskIndex } = getProjectAndTaskIndex(state, payload);
 
     if (taskIndex !== undefined && taskIndex !== -1) {
       project.tasks[taskIndex] = payload.task;
@@ -148,21 +134,25 @@ const mutations = {
 };
 const actions = {
   [MOVE_TASK]({ commit, state }, { taskId, fromProjectId, toProjectId }) {
-    const { project, taskIndex } = getProjectAndTaskIndex(
-      state, { taskId, projectId: fromProjectId }
-    );
+    const { project, taskIndex } = getProjectAndTaskIndex(state, {
+      taskId,
+      projectId: fromProjectId,
+    });
     commit(ADD_TASK, {
       task: project.tasks[taskIndex],
       projectId: toProjectId,
     });
     commit(REMOVE_TASK, {
       taskId,
-      projectId: fromProjectId
+      projectId: fromProjectId,
     });
-  }
+  },
 };
 
 export default {
   namespaced: true,
-  state, getters, mutations, actions
-}
+  state,
+  getters,
+  mutations,
+  actions,
+};
