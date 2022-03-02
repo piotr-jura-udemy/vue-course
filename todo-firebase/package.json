@@ -8,6 +8,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "firebase": "^9.6.5",
+    "firebase-tools": "^10.1.4",
     "vue": "^3.2.25",
     "vuex": "^4.0.2"
   },

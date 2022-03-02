@@ -28,6 +28,9 @@
 </template>
 
 <script setup>
+import { prepareProjectsData } from "./firebase/project"
+await prepareProjectsData()
+
 let nextTaskId = 100;
 
 import BaseCheckbox from "./components/base/BaseCheckbox.vue";
