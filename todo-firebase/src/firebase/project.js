@@ -27,3 +27,17 @@ export const prepareProjectsData = async () => {
   ])
   console.log('Documents should be added now!');
 }
+
+export const fetchSingleDocument = async () => {
+  const docRef = doc(db, "projects", "first")
+  const projectDoc = await getDoc(docRef)
+
+  if (projectDoc.exists()) {
+    console.log({
+      id: projectDoc.id,
+      ...projectDoc.data()
+    })
+  } else {
+    console.log(`The document does not exist!`)
+  }
+}
