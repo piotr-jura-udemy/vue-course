@@ -28,10 +28,11 @@
 </template>
 
 <script setup>
-import { prepareProjectsData, fetchSingleDocument, fetchAllDocuments } from "./firebase/project"
-await prepareProjectsData()
-await fetchSingleDocument()
-await fetchAllDocuments()
+import { prepareProjectsData, fetchSingleDocument, fetchAllDocuments, queryProjects } from "./firebase/project"
+// await prepareProjectsData()
+// await fetchSingleDocument()
+// await fetchAllDocuments()
+queryProjects()
 
 let nextTaskId = 100;
 

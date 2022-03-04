@@ -1,5 +1,5 @@
 import { db } from "./firebase"
-import { collection, setDoc, doc, getDoc, getDocs } from "firebase/firestore"
+import { collection, setDoc, doc, getDoc, getDocs, query, where, orderBy } from "firebase/firestore"
 
 export const prepareProjectsData = async () => {
   const projectsRef = collection(db, "projects")
@@ -31,6 +31,19 @@ export const prepareProjectsData = async () => {
 export const fetchAllDocuments = async () => {
   const projectsRef = collection(db, "projects")
   const result = await getDocs(projectsRef)
+  logResults(result)
+}
+
+export const queryProjects = async () => {
+  const projectsRef = collection(db, "projects")
+  const q = query(
+    projectsRef,
+    where("taskCount", ">", 2),
+    where("taskCount", "<=", 6),
+    orderBy("taskCount"),
+    // orderBy("taskDoneCount")
+  )
+  const result = await getDocs(q)
   logResults(result)
 }
 
