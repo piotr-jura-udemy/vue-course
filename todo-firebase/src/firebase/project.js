@@ -1,5 +1,5 @@
 import { db } from "./firebase"
-import { collection, setDoc, doc, getDoc } from "firebase/firestore"
+import { collection, setDoc, doc, getDoc, getDocs } from "firebase/firestore"
 
 export const prepareProjectsData = async () => {
   const projectsRef = collection(db, "projects")
@@ -27,6 +27,16 @@ export const prepareProjectsData = async () => {
   ])
   console.log('Documents should be added now!');
 }
+
+export const fetchAllDocuments = async () => {
+  const projectsRef = collection(db, "projects")
+  const result = await getDocs(projectsRef)
+  logResults(result)
+}
+
+const logResults = (result) => result.forEach(
+  doc => console.log({ id: doc.id, ...doc.data() })
+)
 
 export const fetchSingleDocument = async () => {
   const docRef = doc(db, "projects", "first")
