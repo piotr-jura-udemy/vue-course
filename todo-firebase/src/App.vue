@@ -28,15 +28,16 @@
 </template>
 
 <script setup>
-import { prepareProjectsData, fetchSingleDocument, fetchAllDocuments, queryProjects, watchProjectsWithDoneTasks } from "./firebase/project"
+import { useQueryProjects } from "./firebase/project"
 // await prepareProjectsData()
 // await fetchSingleDocument()
 // await fetchAllDocuments()
 // queryProjects()
-const unsub = watchProjectsWithDoneTasks()
+const p = await useQueryProjects()
 
-import { onUnmounted } from "vue"
-onUnmounted(unsub)
+import { watch } from "vue"
+
+watch(p, (val) => console.log(val))
 
 let nextTaskId = 100;
 
