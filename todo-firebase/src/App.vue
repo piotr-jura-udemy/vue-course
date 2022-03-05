@@ -29,15 +29,7 @@
 
 <script setup>
 import { useQueryProjects } from "./firebase/project"
-// await prepareProjectsData()
-// await fetchSingleDocument()
-// await fetchAllDocuments()
-// queryProjects()
-const p = await useQueryProjects()
-
-import { watch } from "vue"
-
-watch(p, (val) => console.log(val))
+const projects = useQueryProjects()
 
 let nextTaskId = 100;
 
@@ -57,7 +49,7 @@ import { computed } from "vue";
 
 const store = useStore();
 const activeProjectId = computed(() => store.state.project.activeProjectId);
-const projects = computed(() => store.getters[`project/projectsWithStats`]);
+// const projects = computed(() => store.getters[`project/projectsWithStats`]);
 const tasks = computed(() => store.getters[`project/activeProjectTasks`]);
 
 const onlyPending = computed({
