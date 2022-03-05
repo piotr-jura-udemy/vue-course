@@ -31,6 +31,14 @@
 import { useQueryProjects } from "./firebase/project"
 const projects = useQueryProjects()
 
+import { useUserProfile } from "./firebase/user"
+const userProfile = useUserProfile()
+const activeProjectId = computed(
+  () => userProfile.value?.activeProjectId
+)
+import { provide } from "vue"
+provide("activeProjectId", activeProjectId)
+
 let nextTaskId = 100;
 
 import BaseCheckbox from "./components/base/BaseCheckbox.vue";
@@ -48,7 +56,7 @@ import { useStore } from "vuex";
 import { computed } from "vue";
 
 const store = useStore();
-const activeProjectId = computed(() => store.state.project.activeProjectId);
+// const activeProjectId = computed(() => store.state.project.activeProjectId);
 // const projects = computed(() => store.getters[`project/projectsWithStats`]);
 const tasks = computed(() => store.getters[`project/activeProjectTasks`]);
 

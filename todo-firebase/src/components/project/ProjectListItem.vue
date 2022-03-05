@@ -10,13 +10,14 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, inject } from "vue";
 import { useStore } from "vuex";
 import { SET_ACTIVE_PROJECT } from "../../store/mutation-types";
 
 const props = defineProps({ project: Object });
 const store = useStore();
-const activeProjectId = computed(() => store.state.project.activeProjectId);
+// const activeProjectId = computed(() => store.state.project.activeProjectId);
+const activeProjectId = inject("activeProjectId")
 const isActive = computed(() => activeProjectId.value === props.project.id);
 const notDone = computed(
   () => props.project.taskCount - props.project.taskDoneCount
