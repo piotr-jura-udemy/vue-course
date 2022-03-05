@@ -1,5 +1,5 @@
 import { db } from "./firebase"
-import { collection, setDoc, doc, getDoc, getDocs, query, where, orderBy } from "firebase/firestore"
+import { collection, setDoc, doc, getDoc, getDocs, query, where, orderBy, onSnapshot } from "firebase/firestore"
 
 export const prepareProjectsData = async () => {
   const projectsRef = collection(db, "projects")
@@ -63,4 +63,22 @@ export const fetchSingleDocument = async () => {
   } else {
     console.log(`The document does not exist!`)
   }
+}
+
+export const watchDocument = async () => {
+  return onSnapshot(
+    doc(db, "projects", "first"),
+    (doc) => console.log(doc.data())
+  )
+}
+
+export const watchProjectsWithDoneTasks = async () => {
+  const q = query(
+    collection(db, "projects"),
+    where("taskDoneCount", ">", 0)
+  )
+  return onSnapshot(
+    q,
+    (querySnapshot) => logResults(querySnapshot)
+  )
 }
