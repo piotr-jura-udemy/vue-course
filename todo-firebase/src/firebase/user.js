@@ -1,4 +1,4 @@
-import { onSnapshot, doc } from "firebase/firestore"
+import { onSnapshot, doc, updateDoc } from "firebase/firestore"
 import { ref, onUnmounted } from "vue"
 import { db } from "./firebase"
 
@@ -11,3 +11,12 @@ export const useUserProfile = () => {
   onUnmounted(unsub)
   return userProfile
 }
+
+export const setActiveProjectId =
+  async (activeProjectId) => updateDoc(
+    doc(db, "profiles", "me"),
+    {
+      activeProjectId
+    }
+  )
+
