@@ -28,7 +28,8 @@
 </template>
 
 <script setup>
-import { useQueryProjects } from "./firebase/project"
+import { useQueryProjects, addProject } from "./firebase/project"
+console.log(await addProject())
 const projects = useQueryProjects()
 
 import { useUserProfile } from "./firebase/user"
@@ -36,6 +37,7 @@ const userProfile = useUserProfile()
 const activeProjectId = computed(
   () => userProfile.value?.activeProjectId
 )
+
 import { provide } from "vue"
 provide("activeProjectId", activeProjectId)
 

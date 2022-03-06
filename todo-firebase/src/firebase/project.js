@@ -1,5 +1,5 @@
 import { db } from "./firebase"
-import { collection, setDoc, doc, getDoc, getDocs, query, where, orderBy, onSnapshot } from "firebase/firestore"
+import { collection, setDoc, doc, getDoc, getDocs, query, where, orderBy, onSnapshot, addDoc } from "firebase/firestore"
 import { ref, onUnmounted } from "vue"
 
 export const prepareProjectsData = async () => {
@@ -102,4 +102,17 @@ export const useQueryProjects = () => {
   onUnmounted(unsub)
 
   return projects
+}
+
+export const addProject = async (name = "") => {
+  return await addDoc(
+    collection(db, "projects"),
+    {
+      name,
+      taskCount: 1,
+      taskDoneCount: 0
+    }
+  )
+  // doc(collection(db, "projects"))
+  // setDoc(doc(db, "projects", "something"))
 }
