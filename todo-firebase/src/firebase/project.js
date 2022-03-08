@@ -1,5 +1,5 @@
 import { db } from "./firebase"
-import { collection, setDoc, doc, getDoc, getDocs, query, where, orderBy, onSnapshot, addDoc } from "firebase/firestore"
+import { collection, setDoc, doc, getDoc, getDocs, query, where, orderBy, onSnapshot, addDoc, deleteDoc } from "firebase/firestore"
 import { ref, onUnmounted, watch } from "vue"
 
 export const prepareProjectsData = async () => {
@@ -147,4 +147,10 @@ export const addProject = async (name = "") => {
   )
   // doc(collection(db, "projects"))
   // setDoc(doc(db, "projects", "something"))
+}
+
+export const deleteTask = async (projectId, taskId) => {
+  await deleteDoc(
+    doc(db, "projects", projectId, "tasks", taskId)
+  )
 }
