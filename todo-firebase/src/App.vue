@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import { useQueryProjects } from "./firebase/project"
+import { useQueryProjects, useQueryTasks } from "./firebase/project"
 import { useUserProfile } from "./firebase/user"
 
 import BaseCheckbox from "./components/base/BaseCheckbox.vue";
@@ -52,6 +52,7 @@ const userProfile = useUserProfile()
 const activeProjectId = computed(
   () => userProfile.value?.activeProjectId
 )
+const tasks = useQueryTasks(activeProjectId)
 
 provide("activeProjectId", activeProjectId)
 let nextTaskId = 100;
@@ -59,7 +60,7 @@ let nextTaskId = 100;
 const store = useStore();
 // const activeProjectId = computed(() => store.state.project.activeProjectId);
 // const projects = computed(() => store.getters[`project/projectsWithStats`]);
-const tasks = computed(() => store.getters[`project/activeProjectTasks`]);
+// const tasks = computed(() => store.getters[`project/activeProjectTasks`]);
 
 const onlyPending = computed({
   get: () => store.state.application.onlyPending,
