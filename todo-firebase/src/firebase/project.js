@@ -1,5 +1,5 @@
 import { db } from "./firebase"
-import { collection, setDoc, doc, getDoc, getDocs, query, where, orderBy, onSnapshot, addDoc, deleteDoc } from "firebase/firestore"
+import { collection, setDoc, doc, getDoc, getDocs, query, where, orderBy, onSnapshot, addDoc, deleteDoc, runTransaction } from "firebase/firestore"
 import { ref, onUnmounted, watch } from "vue"
 
 export const prepareProjectsData = async () => {
@@ -153,4 +153,27 @@ export const deleteTask = async (projectId, taskId) => {
   await deleteDoc(
     doc(db, "projects", projectId, "tasks", taskId)
   )
+}
+
+export const addTask = async (projectId, task) => {
+  await runTransaction(db, async (transaction) => {
+    const projectDocRef = doc(
+      db, "projects", projectId
+    )
+    const projectDoc = await transaction.get(
+      projectDocRef
+    )
+
+    if (!projectDoc.exists()) {
+      throw "Project does not exist"
+    }
+
+    const taskCount = projectDoc.data().taskCount + 1
+
+    const taskDocRef = doc(
+      collection(db, "projects", projectId, "tasks")
+    )
+    transaction.set(taskDocRef, task)
+    transaction.update(projectDocRef, { taskCount })
+  })
 }
