@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import { useQueryProjects, useQueryTasks, addTask } from "./firebase/project"
+import { useQueryProjects, useQueryTasks, addTask, updateTask } from "./firebase/project"
 import { useUserProfile } from "./firebase/user"
 
 import BaseCheckbox from "./components/base/BaseCheckbox.vue";
@@ -82,8 +82,8 @@ const taskAdded = (description) =>
     },
   )
 const taskUpdated = (task, changes) =>
-  store.commit(`project/${UPDATE_TASK}`, {
-    projectId: activeProjectId.value,
-    task: Object.assign(task, changes),
-  });
+  updateTask(
+    activeProjectId.value,
+    Object.assign(task, changes),
+  )
 </script>

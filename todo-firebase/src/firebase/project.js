@@ -155,25 +155,67 @@ export const deleteTask = async (projectId, taskId) => {
   )
 }
 
+const getProjectInTransaction = async (transaction, projectId) => {
+  const projectDocRef = doc(
+    db, "projects", projectId
+  )
+  const projectDoc = await transaction.get(
+    projectDocRef
+  )
+
+  if (!projectDoc.exists()) {
+    throw "Project does not exist"
+  }
+
+  return {
+    projectDocRef,
+    projectDoc,
+    projectData: projectDoc.data()
+  }
+}
+
 export const addTask = async (projectId, task) => {
   await runTransaction(db, async (transaction) => {
-    const projectDocRef = doc(
-      db, "projects", projectId
-    )
-    const projectDoc = await transaction.get(
-      projectDocRef
-    )
+    const { projectDocRef, projectData }
+      = await getProjectInTransaction(
+        transaction, projectId
+      )
 
-    if (!projectDoc.exists()) {
-      throw "Project does not exist"
-    }
-
-    const taskCount = projectDoc.data().taskCount + 1
-
+    const taskCount = projectData.taskCount + 1
     const taskDocRef = doc(
       collection(db, "projects", projectId, "tasks")
     )
     transaction.set(taskDocRef, task)
     transaction.update(projectDocRef, { taskCount })
+  })
+}
+
+export const updateTask = async (projectId, task) => {
+  await runTransaction(db, async (transaction) => {
+    const { projectDocRef, projectDoc, projectData }
+      = await getProjectInTransaction(
+        transaction, projectId
+      )
+
+    const taskDocRef = doc(
+      db, "projects", projectId, "tasks", task.id
+    )
+    const taskDoc = await transaction.get(taskDocRef)
+
+    if (!taskDoc.exists()) {
+      throw `Task does not exist`
+    }
+
+    let taskDoneCount = projectData.taskDoneCount
+
+    if (true === task.done && !taskDoc.data().done) {
+      taskDoneCount++
+    } else if (false === task.done && taskDoc.data().done) {
+      taskDoneCount--
+    }
+
+    const { id, ...data } = task
+    transaction.update(taskDocRef, data)
+    transaction.update(projectDocRef, { taskDoneCount })
   })
 }
