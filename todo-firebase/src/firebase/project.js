@@ -149,11 +149,11 @@ export const addProject = async (name = "") => {
   // setDoc(doc(db, "projects", "something"))
 }
 
-export const deleteTask = async (projectId, taskId) => {
-  await deleteDoc(
-    doc(db, "projects", projectId, "tasks", taskId)
-  )
-}
+// export const deleteTask = async (projectId, taskId) => {
+//   await deleteDoc(
+//     doc(db, "projects", projectId, "tasks", taskId)
+//   )
+// }
 
 const getProjectInTransaction = async (transaction, projectId) => {
   const projectDocRef = doc(
@@ -171,6 +171,25 @@ const getProjectInTransaction = async (transaction, projectId) => {
     projectDocRef,
     projectDoc,
     projectData: projectDoc.data()
+  }
+}
+
+const getTaskInTransaction = async (
+  transaction, projectId, taskId
+) => {
+  const taskDocRef = doc(
+    db, "projects", projectId, "tasks", taskId
+  )
+  const taskDoc = await transaction.get(taskDocRef)
+
+  if (!taskDoc.exists()) {
+    throw `Task does not exist`
+  }
+
+  return {
+    taskDocRef,
+    taskDoc,
+    taskData: taskDoc.data()
   }
 }
 
@@ -196,26 +215,37 @@ export const updateTask = async (projectId, task) => {
       = await getProjectInTransaction(
         transaction, projectId
       )
-
-    const taskDocRef = doc(
-      db, "projects", projectId, "tasks", task.id
+    const { taskDocRef, taskData } = await getTaskInTransaction(
+      transaction, projectId, task.id
     )
-    const taskDoc = await transaction.get(taskDocRef)
-
-    if (!taskDoc.exists()) {
-      throw `Task does not exist`
-    }
-
     let taskDoneCount = projectData.taskDoneCount
 
-    if (true === task.done && !taskDoc.data().done) {
+    if (true === task.done && !taskData.done) {
       taskDoneCount++
-    } else if (false === task.done && taskDoc.data().done) {
+    } else if (false === task.done && taskData.done) {
       taskDoneCount--
     }
 
     const { id, ...data } = task
     transaction.update(taskDocRef, data)
     transaction.update(projectDocRef, { taskDoneCount })
+  })
+}
+
+export const deleteTask = async (projectId, taskId) => {
+  await runTransaction(db, async (transaction) => {
+    const { projectDocRef, projectData }
+      = await getProjectInTransaction(
+        transaction, projectId
+      )
+    const { taskDocRef, taskData } = await getTaskInTransaction(
+      transaction, projectId, taskId
+    )
+    const taskCount = projectData.taskCount - 1
+    const taskDoneCount = projectData.taskDoneCount
+      - (taskData.done ? 1 : 0)
+
+    transaction.delete(taskDocRef)
+    transaction.update(projectDocRef, { taskCount, taskDoneCount })
   })
 }
