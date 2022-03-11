@@ -249,3 +249,40 @@ export const deleteTask = async (projectId, taskId) => {
     transaction.update(projectDocRef, { taskCount, taskDoneCount })
   })
 }
+
+export const moveTask = async (
+  fromProjectId, toProjectId, taskId
+) => {
+  await runTransaction(db, async (transaction) => {
+    const { projectDocRef: fromRef, projectData: fromData }
+      = await getProjectInTransaction(
+        transaction, fromProjectId
+      )
+    const { projectDocRef: toRef, projectData: toData }
+      = await getProjectInTransaction(
+        transaction, toProjectId
+      )
+    const { taskDocRef, taskData } = await getTaskInTransaction(
+      transaction, fromProjectId, taskId
+    )
+
+    transaction.update(fromRef, {
+      taskCount: fromData.taskCount - 1,
+      taskDoneCount: fromData.taskDoneCount -
+        (taskData.done ? 1 : 0)
+    })
+    transaction.update(toRef, {
+      taskCount: toData.taskCount + 1,
+      taskDoneCount: toData.taskDoneCount +
+        (taskData.done ? 1 : 0)
+    })
+
+    const newTaskDocRef = doc(
+      collection(
+        db, "projects", toProjectId, "tasks"
+      )
+    )
+    transaction.set(newTaskDocRef, taskData)
+    transaction.delete(taskDocRef)
+  })
+}

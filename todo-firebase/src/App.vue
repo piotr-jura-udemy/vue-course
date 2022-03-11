@@ -40,28 +40,20 @@ import ProjectList from "./components/project/ProjectList.vue";
 import ProjectAdd from "./components/project/ProjectAdd.vue"
 
 import {
-  ADD_TASK,
-  UPDATE_TASK,
   SET_ONLY_PENDING,
 } from "./store/mutation-types";
 import { useStore } from "vuex";
 import { computed, provide } from "vue";
 
 const projects = useQueryProjects()
+provide("projects", projects)
 const userProfile = useUserProfile()
 const activeProjectId = computed(
   () => userProfile.value?.activeProjectId
 )
 const tasks = useQueryTasks(activeProjectId)
-
 provide("activeProjectId", activeProjectId)
-let nextTaskId = 100;
-
 const store = useStore();
-// const activeProjectId = computed(() => store.state.project.activeProjectId);
-// const projects = computed(() => store.getters[`project/projectsWithStats`]);
-// const tasks = computed(() => store.getters[`project/activeProjectTasks`]);
-
 const onlyPending = computed({
   get: () => store.state.application.onlyPending,
   set: (newValue) => store.commit(`application/${SET_ONLY_PENDING}`, newValue),
