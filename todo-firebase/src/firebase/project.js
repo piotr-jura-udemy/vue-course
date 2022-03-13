@@ -1,5 +1,5 @@
 import { db } from "./firebase"
-import { collection, setDoc, doc, getDoc, getDocs, query, where, orderBy, onSnapshot, addDoc, deleteDoc, runTransaction } from "firebase/firestore"
+import { collection, setDoc, doc, getDoc, getDocs, query, where, orderBy, onSnapshot, addDoc, deleteDoc, runTransaction, serverTimestamp } from "firebase/firestore"
 import { ref, onUnmounted, watch } from "vue"
 
 export const prepareProjectsData = async () => {
@@ -118,7 +118,8 @@ export const useQueryTasks = (projectId) => {
     console.log(`Not watching ${oldProjectId} tasks anymore...`)
     unsub()
     const q = query(
-      collection(db, "projects", projectId, "tasks")
+      collection(db, "projects", projectId, "tasks"),
+      orderBy("timestamp", "desc")
     )
     console.log(`Watching ${projectId} tasks!`)
     unsub = onSnapshot(q, (snapshot) => {
@@ -204,7 +205,10 @@ export const addTask = async (projectId, task) => {
     const taskDocRef = doc(
       collection(db, "projects", projectId, "tasks")
     )
-    transaction.set(taskDocRef, task)
+    transaction.set(taskDocRef, {
+      timestamp: serverTimestamp(),
+      ...task
+    })
     transaction.update(projectDocRef, { taskCount })
   })
 }
