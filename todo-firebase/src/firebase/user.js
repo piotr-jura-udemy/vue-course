@@ -28,12 +28,6 @@ export const logout = async () => {
   await signOut(auth)
 }
 
-login(
-  'jura.piotrek@gmail.com',
-  'Jura13151719'
-)
-setTimeout(logout, 10000)
-
 export const useUserProfile = () => {
   const userProfile = ref({})
   const unsub = onSnapshot(
