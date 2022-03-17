@@ -1,7 +1,7 @@
 import { onSnapshot, doc, updateDoc } from "firebase/firestore"
 import { ref, onUnmounted } from "vue"
 import { db } from "./firebase"
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth"
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from "firebase/auth"
 
 export const user = ref(null)
 
@@ -17,10 +17,16 @@ onAuthStateChanged(auth, (data) => {
 })
 
 export const login = async (email, password) => {
-  const result = await signInWithEmailAndPassword(
+  return await signInWithEmailAndPassword(
     auth,
     email,
     password
+  )
+}
+
+export const createUser = async (email, password) => {
+  return await createUserWithEmailAndPassword(
+    auth, email, password
   )
 }
 
