@@ -1,5 +1,5 @@
-import { onSnapshot, doc, updateDoc } from "firebase/firestore"
-import { ref, onUnmounted } from "vue"
+import { onSnapshot, doc, updateDoc, setDoc } from "firebase/firestore"
+import { ref, onUnmounted, watch } from "vue"
 import { db } from "./firebase"
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from "firebase/auth"
 
@@ -25,8 +25,12 @@ export const login = async (email, password) => {
 }
 
 export const createUser = async (email, password) => {
-  return await createUserWithEmailAndPassword(
+  const result = await createUserWithEmailAndPassword(
     auth, email, password
+  )
+  await setDoc(
+    doc(db, "profiles", result.user.uid),
+    {}
   )
 }
 
@@ -36,17 +40,26 @@ export const logout = async () => {
 
 export const useUserProfile = () => {
   const userProfile = ref({})
-  const unsub = onSnapshot(
-    doc(db, "profiles", "me"),
-    (doc) => userProfile.value = doc.data()
-  )
-  onUnmounted(unsub)
+  let unsub = () => { }
+  watch(user, (user) => {
+    if (!user || !user.uid) {
+      return
+    }
+
+    unsub()
+    unsub = onSnapshot(
+      doc(db, "profiles", user.uid),
+      (doc) => userProfile.value = doc.data()
+    )
+  })
+
+  onUnmounted(() => { unsub(); console.log(`Unsub user...`) })
   return userProfile
 }
 
 export const setActiveProjectId =
   async (activeProjectId) => updateDoc(
-    doc(db, "profiles", "me"),
+    doc(db, "profiles", user?.value?.uid),
     {
       activeProjectId
     }
