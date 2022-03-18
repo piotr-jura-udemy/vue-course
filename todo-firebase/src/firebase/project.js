@@ -1,4 +1,5 @@
 import { db } from "./firebase"
+import { user } from "./user"
 import { collection, setDoc, doc, getDoc, getDocs, query, where, orderBy, onSnapshot, addDoc, deleteDoc, runTransaction, serverTimestamp } from "firebase/firestore"
 import { ref, onUnmounted, watch } from "vue"
 
@@ -86,20 +87,28 @@ export const watchProjectsWithDoneTasks = async () => {
 
 export const useQueryProjects = () => {
   const projects = ref([])
+  let unsub = () => { }
 
-  const q = query(
-    collection(db, "projects")
-  )
-  const unsub = onSnapshot(q, (snapshot) => {
-    projects.value = snapshot.docs.map(
-      doc => ({
-        id: doc.id,
-        ...doc.data()
-      })
+  watch(user, (user) => {
+    if (!user || !user.uid) {
+      return
+    }
+
+    const q = query(
+      collection(db, "projects"),
+      where("uid", "==", user.uid)
     )
+    unsub()
+    unsub = onSnapshot(q, (snapshot) => {
+      projects.value = snapshot.docs.map(
+        doc => ({
+          id: doc.id,
+          ...doc.data()
+        })
+      )
+    })
   })
-
-  onUnmounted(unsub)
+  onUnmounted(() => { unsub(); console.log(`Unsub projects...`) })
 
   return projects
 }
@@ -132,22 +141,37 @@ export const useQueryTasks = (projectId) => {
       )
     })
   })
-  onUnmounted(unsub)
+  onUnmounted(() => { unsub(); console.log(`Unsub tasks...`) })
 
   return taskList
 }
 
 export const addProject = async (name = "") => {
-  return await addDoc(
+  if (!user?.value) {
+    return
+  }
+
+  const project = await addDoc(
     collection(db, "projects"),
     {
       name,
       taskCount: 1,
-      taskDoneCount: 0
+      taskDoneCount: 0,
+      uid: user.value.uid
     }
   )
-  // doc(collection(db, "projects"))
-  // setDoc(doc(db, "projects", "something"))
+  await addDoc(
+    collection(db, "projects", project.id, "tasks"),
+    {
+      description: "First task",
+      done: false,
+      priority: false,
+      timestamp: serverTimestamp(),
+      uid: user.value.uid
+    }
+  )
+
+  return project
 }
 
 // export const deleteTask = async (projectId, taskId) => {
@@ -207,6 +231,7 @@ export const addTask = async (projectId, task) => {
     )
     transaction.set(taskDocRef, {
       timestamp: serverTimestamp(),
+      uid: user.value.uid,
       ...task
     })
     transaction.update(projectDocRef, { taskCount })
