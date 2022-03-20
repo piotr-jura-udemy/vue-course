@@ -1,6 +1,7 @@
 <template>
   <div class="flex flex-col md:flex-row">
     <div class="w-full md:w-1/3 xl:w-1/5 mr-4 px-0 md:px-4 mb-4 h-full text-lg md:text-sm">
+      <UserProfile />
       <ProjectAdd />
       <ProjectList :projects="projects" />
     </div>
@@ -38,6 +39,7 @@ import TodoListItem from "./../components/task/TodoListItem.vue";
 import SummaryLine from "./../components/project/ProjectSummaryLine.vue";
 import ProjectList from "./../components/project/ProjectList.vue";
 import ProjectAdd from "./../components/project/ProjectAdd.vue"
+import UserProfile from "./../components/user/UserProfile.vue"
 
 import {
   SET_ONLY_PENDING,
