@@ -16,18 +16,18 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { useStore } from "vuex";
+import { computed, inject } from "vue";
 
-const store = useStore();
-const tasks = computed(() => store.getters[`project/activeProjectTasks`]);
-const total = computed(() => tasks.value.length);
+const tasks = inject("tasks")
+const total = computed(
+  () => tasks.value.length
+)
 const completion = computed(() =>
   Math.ceil(
     (tasks.value.filter((task) => task.done).length / total.value) * 100
   )
-);
+)
 const prioritzed = computed(
   () => tasks.value.filter((task) => task.priority).length
-);
+)
 </script>
