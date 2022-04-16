@@ -1,0 +1,161 @@
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  section {
+    width: 500px;
+    border: 1px solid;
+    padding: 0.5em;
+    margin-bottom: 1em;
+  }
+
+  .box {
+    width: 25px;
+    height: 25px;
+    background-color: aquamarine;
+    transform: translateX(0px);
+    transition: transform 2s linear;
+  }
+
+  .final .box {
+    transform: translateX(400px);
+  }
+
+  .ease-out {
+    transition-timing-function: ease-out;
+  }
+
+  .ease-in {
+    transition-timing-function: ease-in;
+  }
+
+  .ease-out {
+    transition-timing-function: ease-out;
+  }
+
+  .ease-in-out {
+    transition-timing-function: ease-in-out;
+  }
+
+  .ease {
+    transition-timing-function: ease;
+  }
+
+  .cubic {
+    transition-timing-function: cubic-bezier(0.15, 0.77, 0.08, -0.76);
+  }
+
+  .hbutton {
+    background-color: darkslateblue;
+    transition: background-color, color 1s ease-out;
+    border: 0;
+    color: white;
+    padding: 1em;
+    cursor: pointer;
+  }
+
+  .hbutton:hover {
+    background-color: lightpink;
+    color: darkmagenta;
+    transition-duration: 0.2s;
+  }
+
+  @keyframes animation {
+    from {
+      transform: scale(1.0);
+    }
+
+    20% {
+      transform: scale(1.6);
+    }
+
+    40% {
+      transform: scale(1.3);
+    }
+
+    60% {
+      transform: scale(1.5);
+    }
+
+    90% {
+      transform: scale(1.0);
+    }
+
+    to {
+      transform: scale(0.8);
+    }
+  }
+
+  .heart {
+    animation-name: animation;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+
+    display: inline-block;
+    position: relative;
+    font-size: 5em;
+    margin-left: 50px;
+    margin-top: 50px;
+  }
+</style>
+
+<section>
+  <button class="hbutton" id="restart">
+    Click to animate again
+  </button>
+</section>
+
+<section>
+  <p>linear</p>
+  <div class="box"></div>
+</section>
+
+<section>
+  <p>ease out</p>
+  <div class="box ease-out"></div>
+</section>
+
+<section>
+  <p>ease-in</p>
+  <div class="box ease-in"></div>
+</section>
+
+<section>
+  <p>ease-in-out</p>
+  <div class="box ease-in-out"></div>
+</section>
+
+<section>
+  <p>ease</p>
+  <div class="box ease"></div>
+</section>
+
+<section>
+  <p>:hover trigerring transition</p>
+  <p>Different speed of transitions</p>
+  <button class="hbutton">Hover over me</button>
+</section>
+
+<section>
+  <p>cubic-bezier</p>
+  <div class="box cubic"></div>
+</section>
+
+<section style="margin-bottom: 100px">
+  <p>Animation</p>
+  <div class="heart">
+    ♥️
+  </div>
+</section>
+
+<script>
+  window.onload = () =>
+    document.getElementById('restart').onclick = restart
+  setTimeout(
+    () => {
+      restart()
+    }, 2000
+  )
+  const restart = () => document.body.classList.toggle('final')
+</script>
