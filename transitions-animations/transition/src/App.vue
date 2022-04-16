@@ -10,7 +10,7 @@ const showMe = ref(true)
 
 <template>
   <Heart />
-  <!-- <Fade /> -->
+  <Fade />
 
   <!-- <FadeTransition>
     <div v-if="showMe">
