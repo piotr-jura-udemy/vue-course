@@ -12,12 +12,12 @@ const showMe = ref(true)
   <Heart />
   <Fade />
 
-  <!-- <FadeTransition>
+  <FadeTransition>
     <div v-if="showMe">
       <p>I'm visible</p>
       <button @click="showMe = false">Hide me!</button>
     </div>
-  </FadeTransition> -->
+  </FadeTransition>
   <TransitionBetween />
 </template>
 

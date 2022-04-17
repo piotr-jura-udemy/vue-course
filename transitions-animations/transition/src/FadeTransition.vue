@@ -1,4 +1,3 @@
-
 <template>
   <Transition>
     <slot></slot>
