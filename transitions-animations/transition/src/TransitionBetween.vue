@@ -35,7 +35,7 @@ only then animate then 2nd element appearing.
 
 .v-enter-active,
 .v-leave-active {
-  transition: all 0.2s ease-out;
+  transition: all 0.1s ease-out;
 }
 
 .v-enter-from {

@@ -18,7 +18,7 @@ const showMe = ref(true)
       <button @click="showMe = false">Hide me!</button>
     </div>
   </FadeTransition> -->
-  <!-- <TransitionBetween /> -->
+  <TransitionBetween />
 </template>
 
 <style>
