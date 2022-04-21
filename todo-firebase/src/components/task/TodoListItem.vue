@@ -1,19 +1,17 @@
 <template>
   <div
-    class="bg-white shadow-sm rounded-md text-gray-700 flex flex-col"
-    :class="{ 'opacity-25 line-through': task.done }"
-  >
-    <div class="p-4 border-b border-gray-100">{{ task.description }}</div>
+    class="bg-white shadow-sm rounded-md text-gray-700 flex flex-col animate"
+    :class="{ 'opacity-25 line-through': task.done }">
+    <div class="p-4 border-b border-gray-100">{{
+      task.description
+    }}</div>
     <div class="p-4 bg-white flex-grow">
-      <BaseCheckbox
-        class="mb-2"
+      <BaseCheckbox class="mb-2"
         @update:model-value="$emit('update:done', $event)"
-        :model-value="done"
-      >Done</BaseCheckbox>
+        :model-value="done">Done</BaseCheckbox>
       <BaseCheckbox
         @update:model-value="$emit('update:priority', $event)"
-        :model-value="priority"
-      >Prioritized</BaseCheckbox>
+        :model-value="priority">Prioritized</BaseCheckbox>
     </div>
     <TodoListItemMenu />
   </div>
@@ -37,3 +35,9 @@ defineEmits(["update:done", "update:priority"]);
 provide("task", props.task);
 provide("projectId", props.projectId);
 </script>
+
+<style scoped>
+.animate {
+  transition: opacity 0.2s ease-in;
+}
+</style>
