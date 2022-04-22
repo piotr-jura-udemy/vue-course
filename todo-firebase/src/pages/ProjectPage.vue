@@ -1,6 +1,7 @@
 <template>
   <div class="flex flex-col md:flex-row">
-    <div class="w-full md:w-1/3 xl:w-1/5 mr-4 px-0 md:px-4 mb-4 h-full text-lg md:text-sm">
+    <div
+      class="w-full md:w-1/3 xl:w-1/5 mr-4 px-0 md:px-4 mb-4 h-full text-lg md:text-sm">
       <UserProfile />
       <ProjectAdd />
       <ProjectList :projects="projects" />
@@ -8,22 +9,29 @@
     <div class="w-full md:w-2/3 xl:w-4/5">
       <div class="mb-4">
         <AddTaskInput @added="taskAdded" />
-        <BaseCheckbox class="my-4 p-4 text-gray-600 font-weight-100" v-model="onlyPending">
+        <BaseCheckbox
+          class="my-4 p-4 text-gray-600 font-weight-100"
+          v-model="onlyPending">
           <b>Only pending tasks</b>
         </BaseCheckbox>
       </div>
-      <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <TodoListItem
-          v-for="task in displayedTasks"
-          :task="task"
-          :project-id="activeProjectId"
-          :key="task.id"
-          :done="task.done"
-          :priority="task.priority"
-          @update:done="taskUpdated(task, { done: $event })"
-          @update:priority="taskUpdated(task, { priority: $event })"
-        />
-      </div>
+      <Transition name="fade-02" mode="out-in">
+        <div class="grid grid-cols-1 gap-4 lg:grid-cols-3"
+          v-if="displayedTasks.length">
+          <TransitionGroup>
+            <TodoListItem v-for="task in displayedTasks"
+              :task="task" :project-id="activeProjectId"
+              :key="task.id" :done="task.done"
+              :priority="task.priority"
+              @update:done="taskUpdated(task, { done: $event })"
+              @update:priority="taskUpdated(task, { priority: $event })" />
+          </TransitionGroup>
+        </div>
+        <div v-else
+          class="text-3xl text-gray-300 border border-gray-200 w-full p-8 text-center rounded-md">
+          No tasks
+        </div>
+      </Transition>
       <SummaryLine class="mt-8" />
     </div>
   </div>
@@ -82,3 +90,25 @@ const taskUpdated = (task, changes) =>
     Object.assign(task, changes),
   )
 </script>
+
+<style scoped>
+.v-enter-from,
+.v-leave-to {
+  transform: translateY(-5px);
+}
+
+.v-enter-to,
+.v-leave-from {
+  transform: translateY(0);
+}
+
+.v-move,
+.v-enter-active,
+.v-leave-active {
+  transition: transform 0.2s;
+}
+
+.v-leave-active {
+  display: none;
+}
+</style>
