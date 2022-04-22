@@ -1,6 +1,6 @@
 <template>
   <div class="p-4 border-t border-gray-100 flex">
-    <Transition mode="out-in">
+    <Transition mode="out-in" name="fade-02">
       <div v-if="!showMenu">
         <BaseTextButton @click="toggleMenu" class="mr-2"
           color="indigo">Move</BaseTextButton>
@@ -30,20 +30,3 @@ const taskRemoved = () => deleteTask(
 )
 
 </script>
-
-<style scoped>
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
-}
-
-.v-enter-to,
-.v-leave-from {
-  opacity: 1;
-}
-
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 0.2s
-}
-</style>
