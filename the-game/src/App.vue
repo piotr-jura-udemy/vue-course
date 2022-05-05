@@ -5,5 +5,8 @@ const store = useCounterStore()
 
 <template>
   <div>Count is {{ store.count }}</div>
+  <div>
+    <button @click="store.count++">Increase</button>
+  </div>
 </template>
 
