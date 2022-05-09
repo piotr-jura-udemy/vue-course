@@ -15,7 +15,7 @@ const gameTick = () => {
 
   if (gameDone.value) {
     started.value = false
-    store.count = 0
+    store.addScore()
   } else {
     runGame()
   }
