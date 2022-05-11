@@ -9,6 +9,8 @@ const timer = ref(5)
 const gameDone = computed(
   () => timer.value === 0
 )
+
+const reset = () => store.$reset()
 const runGame = () => setTimeout(gameTick, 1000)
 const gameTick = () => {
   timer.value--
@@ -36,6 +38,9 @@ const startGame = () => {
     <div>The game has not started yet! 🏁</div>
     <div style="margin-bottom: 100px">
       Current Best Score is {{ store.highScore }} 🥇
+    </div>
+    <div>
+      <button @click="reset">Rest the Game!</button>
     </div>
     <div>
       <button @click="startGame">Start</button>
