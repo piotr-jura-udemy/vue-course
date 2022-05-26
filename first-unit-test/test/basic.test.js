@@ -20,3 +20,28 @@ test('The object is right', () => {
   expect(example).toBeDefined()
   expect(example).toBeInstanceOf(Example)
 })
+
+test('Checking some objects', () => {
+  const object1 = {
+    name: 'Piotr',
+    type: 'Instructor',
+    grade: 1
+  }
+  const object2 = {
+    name: 'Piotr',
+    grade: 1,
+    type: 'Instructor',
+  }
+
+  const subset = {
+    type: 'Instructor'
+  }
+
+  expect(object1).toEqual(object2)
+  expect(object1).toMatchObject(subset)
+})
+
+test('Testing arrays', () => {
+  expect([1, 2]).toEqual([1, 2])
+  expect([1, 2, 3]).toContain(2)
+})
