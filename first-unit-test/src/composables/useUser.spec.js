@@ -42,3 +42,21 @@ test('Test the calcultor using mocks', () => {
   const mock = vi.fn().mockReturnValue(0.19)
   expect(calculator.tax(100, mock)).toBe(19)
 })
+
+test('Using spies', () => {
+  const spy = vi.spyOn(calculator, 'tax')
+  calculator.tax(100, realTaxRule)
+
+  expect(spy).toHaveBeenCalled()
+  expect(spy).toHaveReturnedWith(10)
+  expect(spy).toHaveBeenCalledWith(100, realTaxRule)
+
+  const spy2 = vi.fn(realTaxRule)
+  calculator.tax(100, spy2)
+  expect(spy2).toHaveBeenCalled()
+  expect(spy2).toHaveBeenCalledWith(100)
+
+  const spy3 = vi.fn(realTaxRule)
+  calculator.tax(0, spy2)
+  expect(spy3).not.toHaveBeenCalled
+})
