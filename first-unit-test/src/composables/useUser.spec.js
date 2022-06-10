@@ -1,6 +1,13 @@
-import { test, expect, vi } from 'vitest'
+import { test, expect, vi, beforeAll, afterAll } from 'vitest'
 import { useUserSimple } from './useUser'
 import nodeFetch from 'node-fetch'
+import { setupServer } from 'msw/node'
+import handlers from './../mocks/handlers'
+
+const server = setupServer(...handlers)
+
+beforeAll(() => server.listen())
+afterAll(() => server.close())
 
 window.fetch = nodeFetch
 
