@@ -9,6 +9,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "node-fetch": "^3.2.5",
     "vue": "^3.2.25"
   },
   "devDependencies": {
