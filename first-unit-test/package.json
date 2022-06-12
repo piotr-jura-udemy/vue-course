@@ -6,7 +6,9 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "test-once": "vitest run",
+    "test-verbose": "vitest run --reporter verbose"
   },
   "dependencies": {
     "node-fetch": "^3.2.5",
