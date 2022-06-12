@@ -1,8 +1,10 @@
 import { test, expect, vi, beforeAll, afterAll } from 'vitest'
-import { useUserSimple } from './useUser'
+import { useUserSimple, useUser } from './useUser'
 import nodeFetch from 'node-fetch'
 import { setupServer } from 'msw/node'
 import handlers from './../mocks/handlers'
+import { defineComponent } from 'vue'
+import { mount, flushPromises } from '@vue/test-utils'
 
 const server = setupServer(...handlers)
 
@@ -17,6 +19,21 @@ test('Test simple composable by calling it directly', async () => {
   await loadUser()
   expect(user.value).toHaveProperty('name', 'Piotr Jura')
   expect(user.value).toHaveProperty('id', 39863283)
+})
+
+test('The user data is being fetched when the component gets mounted', async () => {
+  const TestComponent = defineComponent({
+    template: `<div v-if="user">{{user.name}}</div>`,
+    setup() {
+      return {
+        ...useUser()
+      }
+    }
+  })
+  const wrapper = mount(TestComponent)
+  // await flushPromises()
+  await new Promise(resolve => setTimeout(resolve, 300))
+  expect(wrapper.html()).toEqual('<div>Piotr Jura</div>')
 })
 
 const realTaxRule = (amount) => {
