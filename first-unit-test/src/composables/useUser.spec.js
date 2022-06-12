@@ -1,4 +1,4 @@
-import { test, expect, vi, beforeAll, afterAll } from 'vitest'
+import { test, expect, vi, beforeAll, afterAll, describe, it } from 'vitest'
 import { useUserSimple, useUser } from './useUser'
 import nodeFetch from 'node-fetch'
 import { setupServer } from 'msw/node'
@@ -13,28 +13,31 @@ afterAll(() => server.close())
 
 window.fetch = nodeFetch
 
-test('Test simple composable by calling it directly', async () => {
-  const { user, loadUser } = useUserSimple('piotr-jura-udemy')
-  expect(user.value).toBe(null)
-  await loadUser()
-  expect(user.value).toHaveProperty('name', 'Piotr Jura')
-  expect(user.value).toHaveProperty('id', 39863283)
+describe('Test Composables', () => {
+  test('Test simple composable by calling it directly', async () => {
+    const { user, loadUser } = useUserSimple('piotr-jura-udemy')
+    expect(user.value).toBe(null)
+    await loadUser()
+    expect(user.value).toHaveProperty('name', 'Piotr Jura')
+    expect(user.value).toHaveProperty('id', 39863283)
+  })
+
+  test('The user data is being fetched when the component gets mounted', async () => {
+    const TestComponent = defineComponent({
+      template: `<div v-if="user">{{user.name}}</div>`,
+      setup() {
+        return {
+          ...useUser()
+        }
+      }
+    })
+    const wrapper = mount(TestComponent)
+    // await flushPromises()
+    await new Promise(resolve => setTimeout(resolve, 300))
+    expect(wrapper.html()).toEqual('<div>Piotr Jura</div>')
+  })
 })
 
-test('The user data is being fetched when the component gets mounted', async () => {
-  const TestComponent = defineComponent({
-    template: `<div v-if="user">{{user.name}}</div>`,
-    setup() {
-      return {
-        ...useUser()
-      }
-    }
-  })
-  const wrapper = mount(TestComponent)
-  // await flushPromises()
-  await new Promise(resolve => setTimeout(resolve, 300))
-  expect(wrapper.html()).toEqual('<div>Piotr Jura</div>')
-})
 
 const realTaxRule = (amount) => {
   if (amount < 100) {
@@ -57,14 +60,16 @@ const calculator = {
   },
 }
 
-test('Test the calculator without mocking', () => {
-  const tax = calculator.tax(100, realTaxRule)
-  expect(tax).toBe(10)
-})
+describe('Mock testing', () => {
+  it('Test the calculator without mocking', () => {
+    const tax = calculator.tax(100, realTaxRule)
+    expect(tax).toBe(10)
+  })
 
-test('Test the calcultor using mocks', () => {
-  const mock = vi.fn().mockReturnValue(0.19)
-  expect(calculator.tax(100, mock)).toBe(19)
+  it('Test the calcultor using mocks', () => {
+    const mock = vi.fn().mockReturnValue(0.19)
+    expect(calculator.tax(100, mock)).toBe(19)
+  })
 })
 
 test('Using spies', () => {
